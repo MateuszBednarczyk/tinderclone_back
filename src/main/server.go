@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"tinderclone_back/src/pkg/handlers"
+	"tinderclone_back/src/pkg/services"
 )
 
 func launchServer(wg *sync.WaitGroup, serverInstance *echo.Echo, ch chan string) {
@@ -15,6 +16,7 @@ func launchServer(wg *sync.WaitGroup, serverInstance *echo.Echo, ch chan string)
 	}
 	serverInstance = echo.New()
 	initializeHandlers(serverInstance)
+	services.InitializeServices()
 	serverInstance.Logger.Fatal(serverInstance.Start("localhost:8000"))
 	wg.Done()
 }
