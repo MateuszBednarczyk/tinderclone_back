@@ -15,6 +15,6 @@ func NewRegisterHandler() *registerHandler {
 	return &registerHandler{}
 }
 
-func (h *registerHandler) HandleRegister(c echo.Context) {
-	c.JSON(200, "hi")
+func (h *registerHandler) HandleRegister(c echo.Context) error {
+	return c.JSON(200, "hi")
 }
