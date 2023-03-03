@@ -23,36 +23,20 @@ func NewRegisterService() *registerService {
 
 func (s *registerService) RegisterUser(dto dto.RegisterUser) *Result {
 	if !isUsernameValid(dto.Username) {
-		return &Result{
-			Message: "Username cannot be blank",
-			Code:    400,
-			Content: []interface{}{},
-		}
+		return NewResult("Username cannot be blank", 400, []interface{}{})
 	}
 
 	if !isPasswordValid(dto.Password) {
-		return &Result{
-			Message: "Password cannot be blank",
-			Code:    400,
-			Content: []interface{}{},
-		}
+		return NewResult("Password cannot be blank", 400, []interface{}{})
 	}
 
 	if stores.IsUsernameAlreadyTaken(dto.Username) {
-		return &Result{
-			Message: "Username is already taken",
-			Code:    409,
-			Content: []interface{}{},
-		}
+		return NewResult("Username is already taken", 409, []interface{}{})
 	}
 
 	hash, err := hashPassword(dto.Password)
 	if err != nil {
-		return &Result{
-			Message: "Couldn't hash password",
-			Code:    500,
-			Content: []interface{}{},
-		}
+		return NewResult("Couldn't hash password", 500, []interface{}{})
 	}
 
 	user := &domain.User{
@@ -62,18 +46,10 @@ func (s *registerService) RegisterUser(dto dto.RegisterUser) *Result {
 
 	result := stores.SaveUser(user)
 	if result != nil {
-		return &Result{
-			Message: "There was an error, while attempt of saving user",
-			Code:    500,
-			Content: []interface{}{},
-		}
+		return NewResult("There was an error, while attempt of saving user", 500, []interface{}{})
 	}
 
-	return &Result{
-		Message: "Account created",
-		Code:    200,
-		Content: []interface{}{},
-	}
+	return NewResult("Account created", 200, []interface{}{})
 }
 
 func isUsernameValid(username string) bool {

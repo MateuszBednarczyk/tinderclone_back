@@ -16,3 +16,13 @@ func IsUsernameAlreadyTaken(username string) bool {
 
 	return user.Username != ""
 }
+
+func SelectUserByUsername(username string) (*domain.User, error) {
+	var user domain.User
+	err := database.GetDb().Where("username = ?", username).Find(&user)
+	if err.Error != nil {
+		return nil, err.Error
+	}
+	
+	return &user, nil
+}
