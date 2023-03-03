@@ -8,12 +8,17 @@ import (
 )
 
 type ILoginService interface {
+	LoginUser(dto dto.Credentials) *Result
 }
 
 type loginService struct {
 }
 
-func (s *loginService) loginUser(dto dto.Credentials) *Result {
+func NewLoginService() *loginService {
+	return &loginService{}
+}
+
+func (s *loginService) LoginUser(dto dto.Credentials) *Result {
 	var err error
 
 	foundUser, err := stores.SelectUserByUsername(dto.Username)

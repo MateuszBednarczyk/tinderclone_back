@@ -43,6 +43,9 @@ func launchServer(wg *sync.WaitGroup, serverInstance *echo.Echo, ch chan string)
 func initializeHandlers(serverInstance *echo.Echo) {
 	healthCheckHandler := handlers.NewHealthCheckHandler()
 	registerHandler := handlers.NewRegisterHandler()
-	serverInstance.GET("/api/v1/health", healthCheckHandler.HandleHealthCheck)
-	serverInstance.POST("/api/v1/register", registerHandler.HandleRegister)
+	loginHandler := handlers.NewLoginHandler()
+
+	serverInstance.GET("api/"+apiVersion+"/health", healthCheckHandler.HandleHealthCheck)
+	serverInstance.POST("api/"+apiVersion+"/user", registerHandler.HandleRegister)
+	serverInstance.POST("api/"+apiVersion+"/auth", loginHandler.HandleLogin)
 }

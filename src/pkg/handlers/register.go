@@ -19,13 +19,12 @@ func NewRegisterHandler() *registerHandler {
 }
 
 func (h *registerHandler) HandleRegister(c echo.Context) error {
-	service := services.RegisterService()
 	var dto dto.RegisterUser
 	err := c.Bind(&dto)
 	if err != nil {
 		return c.JSON(400, "Couldn't read dto")
 	}
-	serviceResponse := service.RegisterUser(dto)
+	serviceResponse := services.RegisterService().RegisterUser(dto)
 
 	return c.JSON(serviceResponse.Code, CreateResponse(serviceResponse))
 }
