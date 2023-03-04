@@ -19,12 +19,12 @@ func NewLoginHandler() *loginHandler {
 }
 
 func (h *loginHandler) HandleLogin(c echo.Context) error {
-	var dto dto.Credentials
-	err := c.Bind(&dto)
+	var requestBody dto.Credentials
+	err := c.Bind(&requestBody)
 	if err != nil {
 		return c.JSON(400, "Couldn't read the dto")
 	}
-	serviceResult := services.LoginService().LoginUser(dto)
+	serviceResult := services.LoginService().LoginUser(requestBody)
 
 	return c.JSON(serviceResult.Code, CreateResponse(serviceResult))
 }

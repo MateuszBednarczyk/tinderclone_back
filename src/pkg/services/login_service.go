@@ -18,18 +18,19 @@ func NewLoginService() *loginService {
 	return &loginService{}
 }
 
-func (s *loginService) LoginUser(dto dto.Credentials) *Result {
+func (s *loginService) LoginUser(requestBody dto.Credentials) *Result {
 	var err error
 
-	foundUser, err := stores.SelectUserByUsername(dto.Username)
+	foundUser, err := stores.SelectUserByUsername(requestBody.Username)
 	if err != nil {
 		return NewResult("Couldn't find user", 404, []interface{}{err.Error()})
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(dto.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(requestBody.Password))
 	if err != nil {
 		return NewResult("Bad credentials", 401, []interface{}{})
 	}
+	tokens := JwtService().GenerateTokens(requestBody.Username)
 
-	return NewResult("Logged in", 200, []interface{}{"tokens"})
+	return NewResult("Logged in", 200, tokens.Content)
 }

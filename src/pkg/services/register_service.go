@@ -21,26 +21,26 @@ func NewRegisterService() *registerService {
 	return &registerService{}
 }
 
-func (s *registerService) RegisterUser(dto dto.RegisterUser) *Result {
-	if !isUsernameValid(dto.Username) {
+func (s *registerService) RegisterUser(requestBody dto.RegisterUser) *Result {
+	if !isUsernameValid(requestBody.Username) {
 		return NewResult("Username cannot be blank", 400, []interface{}{})
 	}
 
-	if !isPasswordValid(dto.Password) {
+	if !isPasswordValid(requestBody.Password) {
 		return NewResult("Password cannot be blank", 400, []interface{}{})
 	}
 
-	if stores.IsUsernameAlreadyTaken(dto.Username) {
+	if stores.IsUsernameAlreadyTaken(requestBody.Username) {
 		return NewResult("Username is already taken", 409, []interface{}{})
 	}
 
-	hash, err := hashPassword(dto.Password)
+	hash, err := hashPassword(requestBody.Password)
 	if err != nil {
 		return NewResult("Couldn't hash password", 500, []interface{}{})
 	}
 
 	user := &domain.User{
-		Username: dto.Username,
+		Username: requestBody.Username,
 		Password: string(hash),
 	}
 

@@ -2,10 +2,12 @@ package services
 
 var iRegisterService IRegisterService
 var iLoginService ILoginService
+var iJWTService IJWTService
 
 func InitializeServices() {
 	iRegisterService = NewRegisterService()
 	iLoginService = NewLoginService()
+	iJWTService = NewJwtService()
 }
 
 func RegisterService() IRegisterService {
@@ -14,4 +16,8 @@ func RegisterService() IRegisterService {
 
 func LoginService() ILoginService {
 	return iLoginService
+}
+
+func JwtService() IJWTService {
+	return iJWTService
 }
