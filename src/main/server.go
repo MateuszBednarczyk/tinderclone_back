@@ -21,7 +21,7 @@ var (
 	dbName     = "tinder"
 )
 
-func launchServer(wg *sync.WaitGroup, serverInstance *echo.Echo, ch chan string) {
+func launchServer(wg *sync.WaitGroup, ch chan string) {
 	if serverInstance != nil {
 		ch <- "Server instance already running"
 		wg.Done()
@@ -36,16 +36,16 @@ func launchServer(wg *sync.WaitGroup, serverInstance *echo.Echo, ch chan string)
 	})
 	initializeHandlers(serverInstance)
 	services.InitializeServices()
-	serverInstance.Logger.Fatal(serverInstance.Start("localhost:8000"))
+	serverInstance.Logger.Fatal(serverInstance.Start(server + ":" + port))
 	wg.Done()
 }
 
-func initializeHandlers(serverInstance *echo.Echo) {
+func initializeHandlers(si *echo.Echo) {
 	healthCheckHandler := handlers.NewHealthCheckHandler()
 	registerHandler := handlers.NewRegisterHandler()
 	loginHandler := handlers.NewLoginHandler()
 
-	serverInstance.GET("api/"+apiVersion+"/health", healthCheckHandler.HandleHealthCheck)
-	serverInstance.POST("api/"+apiVersion+"/user", registerHandler.HandleRegister)
-	serverInstance.POST("api/"+apiVersion+"/auth", loginHandler.HandleLogin)
+	si.GET("api/"+apiVersion+"/health", healthCheckHandler.HandleHealthCheck)
+	si.POST("api/"+apiVersion+"/user", registerHandler.HandleRegister)
+	si.POST("api/"+apiVersion+"/auth", loginHandler.HandleLogin)
 }

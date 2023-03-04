@@ -13,7 +13,7 @@ func main() {
 	wg := sync.WaitGroup{}
 	ch := make(chan string)
 	wg.Add(1)
-	go launchServer(&wg, serverInstance, ch)
+	go launchServer(&wg, ch)
 	fmt.Println(<-ch)
 	wg.Wait()
 }
