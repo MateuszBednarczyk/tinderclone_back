@@ -23,6 +23,6 @@ func SelectUserByUsername(username string) (*domain.User, error) {
 	if err.Error != nil {
 		return nil, err.Error
 	}
-	
+
 	return &user, nil
 }
