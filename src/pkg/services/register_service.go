@@ -17,26 +17,26 @@ type IAccountMaker interface {
 type accountMaker struct {
 }
 
-func NewRegisterService() *accountMaker {
+func NewAccountMaker() *accountMaker {
 	return &accountMaker{}
 }
 
 func (s *accountMaker) RegisterUser(requestBody dto.RegisterUser) *Result {
 	if !isUsernameValid(requestBody.Username) {
-		return NewResult("Username cannot be blank", 400, []interface{}{})
+		return CreateServiceResult("Username cannot be blank", 400, []interface{}{})
 	}
 
 	if !isPasswordValid(requestBody.Password) {
-		return NewResult("Password cannot be blank", 400, []interface{}{})
+		return CreateServiceResult("Password cannot be blank", 400, []interface{}{})
 	}
 
 	if stores.IsUsernameAlreadyTaken(requestBody.Username) {
-		return NewResult("Username is already taken", 409, []interface{}{})
+		return CreateServiceResult("Username is already taken", 409, []interface{}{})
 	}
 
 	hash, err := hashPassword(requestBody.Password)
 	if err != nil {
-		return NewResult("Couldn't hash password", 500, []interface{}{})
+		return CreateServiceResult("Couldn't hash password", 500, []interface{}{})
 	}
 
 	user := &domain.User{
@@ -46,10 +46,10 @@ func (s *accountMaker) RegisterUser(requestBody dto.RegisterUser) *Result {
 
 	result := stores.SaveUser(user)
 	if result != nil {
-		return NewResult("There was an error, while attempt of saving user", 500, []interface{}{})
+		return CreateServiceResult("There was an error, while attempt of saving user", 500, []interface{}{})
 	}
 
-	return NewResult("Account created", 200, []interface{}{})
+	return CreateServiceResult("Account created", 200, []interface{}{})
 }
 
 func isUsernameValid(username string) bool {

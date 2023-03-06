@@ -5,9 +5,9 @@ var iAuthorizer IAuthorizer
 var iTokenizer IJwtTokenizer
 
 func InitializeServices() {
-	iAccountMaker = NewRegisterService()
-	iAuthorizer = NewLoginService()
-	iTokenizer = NewJwtService()
+	iAccountMaker = NewAccountMaker()
+	iAuthorizer = NewAuthorizer()
+	iTokenizer = NewJwtTokenizer()
 }
 
 func RegisterService() IAccountMaker {

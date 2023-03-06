@@ -7,7 +7,7 @@ type Response struct {
 	Content []interface{}
 }
 
-func CreateResponse(r *services.Result) *Response {
+func CreateHandlerResponse(r *services.Result) *Response {
 	return &Response{
 		Message: r.Message,
 		Content: r.Content,

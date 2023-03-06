@@ -6,7 +6,7 @@ type Result struct {
 	Content []interface{}
 }
 
-func NewResult(message string, code int, content []interface{}) *Result {
+func CreateServiceResult(message string, code int, content []interface{}) *Result {
 	return &Result{
 		Message: message,
 		Code:    code,

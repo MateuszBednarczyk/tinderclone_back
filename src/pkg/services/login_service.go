@@ -14,7 +14,7 @@ type IAuthorizer interface {
 type authorizer struct {
 }
 
-func NewLoginService() *authorizer {
+func NewAuthorizer() *authorizer {
 	return &authorizer{}
 }
 
@@ -23,14 +23,14 @@ func (s *authorizer) LoginUser(requestBody dto.Credentials) *Result {
 
 	foundUser, err := stores.SelectUserByUsername(requestBody.Username)
 	if err != nil {
-		return NewResult("Couldn't find user", 404, []interface{}{err.Error()})
+		return CreateServiceResult("Couldn't find user", 404, []interface{}{err.Error()})
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(requestBody.Password))
 	if err != nil {
-		return NewResult("Bad credentials", 401, []interface{}{})
+		return CreateServiceResult("Bad credentials", 401, []interface{}{})
 	}
 	tokens := JwtService().GenerateTokens(requestBody.Username)
 
-	return NewResult("Logged in", 200, tokens.Content)
+	return CreateServiceResult("Logged in", 200, tokens.Content)
 }

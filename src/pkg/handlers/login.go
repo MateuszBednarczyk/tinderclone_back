@@ -26,5 +26,5 @@ func (h *loginHandler) HandleLogin(c echo.Context) error {
 	}
 	serviceResult := services.LoginService().LoginUser(requestBody)
 
-	return c.JSON(serviceResult.Code, CreateResponse(serviceResult))
+	return c.JSON(serviceResult.Code, CreateHandlerResponse(serviceResult))
 }
