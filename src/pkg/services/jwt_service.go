@@ -7,13 +7,13 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-type IJWTService interface {
+type IJwtTokenizer interface {
 	GenerateTokens(username string) *Result
 	RefreshToken(rawToken string) *Result
 	IsTokenValid(rawToken string) *Result
 }
 
-type jwtService struct {
+type jwtTokenizer struct {
 }
 
 type JwtClaims struct {
@@ -22,11 +22,11 @@ type JwtClaims struct {
 	jwt.StandardClaims
 }
 
-func NewJwtService() *jwtService {
-	return &jwtService{}
+func NewJwtService() *jwtTokenizer {
+	return &jwtTokenizer{}
 }
 
-func (s *jwtService) GenerateTokens(username string) *Result {
+func (s *jwtTokenizer) GenerateTokens(username string) *Result {
 	baseTokenClaims := JwtClaims{
 		username,
 		true,
@@ -61,7 +61,7 @@ func (s *jwtService) GenerateTokens(username string) *Result {
 	return NewResult("Tokens generated successfully", 200, content)
 }
 
-func (s *jwtService) RefreshToken(rawToken string) *Result {
+func (s *jwtTokenizer) RefreshToken(rawToken string) *Result {
 	if s.IsTokenValid(rawToken).Content[0] == false {
 		return NewResult("Invalid token", 403, nil)
 	}
@@ -74,7 +74,7 @@ func (s *jwtService) RefreshToken(rawToken string) *Result {
 	return tokens
 }
 
-func (s *jwtService) IsTokenValid(rawToken string) *Result {
+func (s *jwtTokenizer) IsTokenValid(rawToken string) *Result {
 	var isTokenCorrect bool
 
 	if rawToken == "" {

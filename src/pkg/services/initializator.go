@@ -1,23 +1,23 @@
 package services
 
-var iRegisterService IRegisterService
-var iLoginService ILoginService
-var iJWTService IJWTService
+var iAccountMaker IAccountMaker
+var iAuthorizer IAuthorizer
+var iTokenizer IJwtTokenizer
 
 func InitializeServices() {
-	iRegisterService = NewRegisterService()
-	iLoginService = NewLoginService()
-	iJWTService = NewJwtService()
+	iAccountMaker = NewRegisterService()
+	iAuthorizer = NewLoginService()
+	iTokenizer = NewJwtService()
 }
 
-func RegisterService() IRegisterService {
-	return iRegisterService
+func RegisterService() IAccountMaker {
+	return iAccountMaker
 }
 
-func LoginService() ILoginService {
-	return iLoginService
+func LoginService() IAuthorizer {
+	return iAuthorizer
 }
 
-func JwtService() IJWTService {
-	return iJWTService
+func JwtService() IJwtTokenizer {
+	return iTokenizer
 }

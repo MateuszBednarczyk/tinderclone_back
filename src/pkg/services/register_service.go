@@ -10,18 +10,18 @@ import (
 	"tinderclone_back/src/pkg/stores"
 )
 
-type IRegisterService interface {
+type IAccountMaker interface {
 	RegisterUser(dto dto.RegisterUser) *Result
 }
 
-type registerService struct {
+type accountMaker struct {
 }
 
-func NewRegisterService() *registerService {
-	return &registerService{}
+func NewRegisterService() *accountMaker {
+	return &accountMaker{}
 }
 
-func (s *registerService) RegisterUser(requestBody dto.RegisterUser) *Result {
+func (s *accountMaker) RegisterUser(requestBody dto.RegisterUser) *Result {
 	if !isUsernameValid(requestBody.Username) {
 		return NewResult("Username cannot be blank", 400, []interface{}{})
 	}

@@ -7,18 +7,18 @@ import (
 	"tinderclone_back/src/pkg/stores"
 )
 
-type ILoginService interface {
+type IAuthorizer interface {
 	LoginUser(dto dto.Credentials) *Result
 }
 
-type loginService struct {
+type authorizer struct {
 }
 
-func NewLoginService() *loginService {
-	return &loginService{}
+func NewLoginService() *authorizer {
+	return &authorizer{}
 }
 
-func (s *loginService) LoginUser(requestBody dto.Credentials) *Result {
+func (s *authorizer) LoginUser(requestBody dto.Credentials) *Result {
 	var err error
 
 	foundUser, err := stores.SelectUserByUsername(requestBody.Username)
