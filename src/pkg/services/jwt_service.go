@@ -78,12 +78,12 @@ func (s *jwtService) IsTokenValid(rawToken string) *Result {
 	var isTokenCorrect bool
 
 	if rawToken == "" {
-		return NewResult("Given token is empty", 400, []interface{}{})
+		return NewResult("Given token is empty", 403, []interface{}{})
 	}
 
 	tokenString := strings.TrimPrefix(rawToken, "Bearer ")
 	if tokenString == rawToken {
-		return NewResult("Given token is incorrect", 400, []interface{}{})
+		return NewResult("Given token format is invalid", 403, []interface{}{})
 	}
 
 	token, err := jwt.ParseWithClaims(tokenString, &JwtClaims{}, func(token *jwt.Token) (interface{}, error) {

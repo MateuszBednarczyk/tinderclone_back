@@ -3,10 +3,12 @@ package main
 import (
 	"sync"
 
+	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 
 	"tinderclone_back/src/pkg/database"
 	"tinderclone_back/src/pkg/handlers"
+	"tinderclone_back/src/pkg/middlewares"
 	"tinderclone_back/src/pkg/services"
 )
 
@@ -45,7 +47,10 @@ func initializeHandlers(si *echo.Echo) {
 	registerHandler := handlers.NewRegisterHandler()
 	loginHandler := handlers.NewLoginHandler()
 
-	si.GET("api/"+apiVersion+"/health", healthCheckHandler.HandleHealthCheck)
+	adminGroup := serverInstance.Group("api/" + apiVersion + "/health")
+	adminGroup.Use(echojwt.JWT([]byte("secret")))
+
+	si.GET("api/"+apiVersion+"/health", healthCheckHandler.HandleHealthCheck, middlewares.AdminMiddleware)
 	si.POST("api/"+apiVersion+"/user", registerHandler.HandleRegister)
 	si.POST("api/"+apiVersion+"/auth", loginHandler.HandleLogin)
 }
