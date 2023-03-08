@@ -30,7 +30,9 @@ func (s *authenticator) LoginUser(requestBody dto.Credentials) *Result {
 	if err != nil {
 		return CreateServiceResult("Bad credentials", 401, []interface{}{})
 	}
-	tokens := Tokenizer().GenerateTokens(requestBody.Username)
+
+	isAdmin := foundUser.Role == 0
+	tokens := Tokenizer().GenerateTokens(requestBody.Username, isAdmin)
 
 	return CreateServiceResult("Logged in", 200, tokens.Content)
 }

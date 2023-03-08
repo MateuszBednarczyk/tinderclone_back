@@ -8,8 +8,8 @@ import (
 )
 
 type IJwtTokenizer interface {
-	GenerateTokens(username string) *Result
-	RefreshToken(rawToken string) *Result
+	GenerateTokens(username string, isAdmin bool) *Result
+	RefreshToken(rawToken string, isAdmin bool) *Result
 	IsTokenValid(rawToken string) *Result
 }
 
@@ -26,10 +26,10 @@ func NewJwtTokenizer() *jwtTokenizer {
 	return &jwtTokenizer{}
 }
 
-func (s *jwtTokenizer) GenerateTokens(username string) *Result {
+func (s *jwtTokenizer) GenerateTokens(username string, isAdmin bool) *Result {
 	baseTokenClaims := JwtClaims{
 		username,
-		true,
+		isAdmin,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(15 * time.Minute).Unix(),
 		},
@@ -37,7 +37,7 @@ func (s *jwtTokenizer) GenerateTokens(username string) *Result {
 
 	refreshTokenClaims := JwtClaims{
 		username,
-		true,
+		isAdmin,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(30 * time.Minute).Unix(),
 		},
@@ -61,12 +61,12 @@ func (s *jwtTokenizer) GenerateTokens(username string) *Result {
 	return CreateServiceResult("Tokens generated successfully", 200, content)
 }
 
-func (s *jwtTokenizer) RefreshToken(rawToken string) *Result {
+func (s *jwtTokenizer) RefreshToken(rawToken string, isAdmin bool) *Result {
 	if s.IsTokenValid(rawToken).Content[0] == false {
 		return CreateServiceResult("Invalid token", 403, nil)
 	}
 
-	tokens := s.GenerateTokens(rawToken)
+	tokens := s.GenerateTokens(rawToken, isAdmin)
 	if tokens.Content == nil {
 		return CreateServiceResult(tokens.Message, tokens.Code, nil)
 	}

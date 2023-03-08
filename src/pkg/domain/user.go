@@ -4,6 +4,14 @@ import (
 	"github.com/google/uuid"
 )
 
+type Role int
+
+const (
+	admin Role = iota
+	moderator
+	user
+)
+
 type User struct {
 	UserID   uuid.UUID `gorm:"primary_key;type:uuid;default:gen_random_uuid()" json:"Id"`
 	Username string    `gorm:"uniqueIndex;not null;type:varchar(25)" json:"Username"`
@@ -12,4 +20,5 @@ type User struct {
 	Surname  string    `gorm:"not null;type:varchar(30)" json:"Surname"`
 	Country  uuid.UUID `gorm:"type:uuid;foreignKey:CountryID" json:"Country"`
 	City     uuid.UUID `gorm:"type:uuid;foreignKey:CityID" json:"City"`
+	Role     Role      `gorm:"type:int" json:"Role"`
 }
