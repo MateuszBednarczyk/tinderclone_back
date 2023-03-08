@@ -46,11 +46,16 @@ func initializeHandlers(si *echo.Echo) {
 	healthCheckHandler := handlers.NewHealthCheckHandler()
 	registerHandler := handlers.NewRegisterHandler()
 	loginHandler := handlers.NewLoginHandler()
+	accountHandler := handlers.NewAccounterHandler()
 
 	adminGroup := serverInstance.Group("api/" + apiVersion + "/health")
 	adminGroup.Use(echojwt.JWT([]byte("secret")))
-
 	si.GET("api/"+apiVersion+"/health", healthCheckHandler.HandleHealthCheck, middlewares.AdminMiddleware)
+
+	userGroup := serverInstance.Group("/api/" + apiVersion + "/user")
+	userGroup.Use(echojwt.JWT([]byte("secret")))
+	si.GET("api/"+apiVersion+"/user/:username", accountHandler.GetAccountInformations, middlewares.LoggedUserMiddleware)
+
 	si.POST("api/"+apiVersion+"/user", registerHandler.HandleRegister)
 	si.POST("api/"+apiVersion+"/auth", loginHandler.HandleLogin)
 }

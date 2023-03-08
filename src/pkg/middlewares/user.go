@@ -7,7 +7,7 @@ import (
 	"tinderclone_back/src/pkg/services"
 )
 
-func AdminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+func LoggedUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		authHeader := c.Request().Header.Get("Authorization")
 		serviceResponse := services.Tokenizer().IsTokenValid(authHeader)
@@ -16,11 +16,7 @@ func AdminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			return c.JSON(serviceResponse.Code, handlers.CreateHandlerResponse(serviceResponse))
 		}
 
-		if serviceResponse.Content[0] == false {
-			return c.JSON(serviceResponse.Code, handlers.CreateHandlerResponse(serviceResponse))
-		}
-
-		if serviceResponse.Content[1].(*services.JwtClaims).IsAdmin == true {
+		if serviceResponse.Content[0].(bool) {
 			return next(c)
 		}
 

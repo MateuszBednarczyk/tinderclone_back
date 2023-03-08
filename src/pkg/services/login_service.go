@@ -7,18 +7,18 @@ import (
 	"tinderclone_back/src/pkg/stores"
 )
 
-type IAuthorizer interface {
+type IAuthenticator interface {
 	LoginUser(dto dto.Credentials) *Result
 }
 
-type authorizer struct {
+type authenticator struct {
 }
 
-func NewAuthorizer() *authorizer {
-	return &authorizer{}
+func NewAuthenticator() *authenticator {
+	return &authenticator{}
 }
 
-func (s *authorizer) LoginUser(requestBody dto.Credentials) *Result {
+func (s *authenticator) LoginUser(requestBody dto.Credentials) *Result {
 	var err error
 
 	foundUser, err := stores.SelectUserByUsername(requestBody.Username)
@@ -30,7 +30,7 @@ func (s *authorizer) LoginUser(requestBody dto.Credentials) *Result {
 	if err != nil {
 		return CreateServiceResult("Bad credentials", 401, []interface{}{})
 	}
-	tokens := JwtService().GenerateTokens(requestBody.Username)
+	tokens := Tokenizer().GenerateTokens(requestBody.Username)
 
 	return CreateServiceResult("Logged in", 200, tokens.Content)
 }

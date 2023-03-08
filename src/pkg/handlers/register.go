@@ -34,7 +34,7 @@ func (h *registerHandler) HandleRegister(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
-	serviceResponse := services.RegisterService().RegisterUser(requestBody)
+	serviceResponse := services.AccountMaker().RegisterUser(requestBody)
 
 	return c.JSON(serviceResponse.Code, CreateHandlerResponse(serviceResponse))
 }

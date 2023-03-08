@@ -1,23 +1,29 @@
 package services
 
 var iAccountMaker IAccountMaker
-var iAuthorizer IAuthorizer
+var iAuthenticator IAuthenticator
 var iTokenizer IJwtTokenizer
+var iAccounter IAccounter
 
 func InitializeServices() {
 	iAccountMaker = NewAccountMaker()
-	iAuthorizer = NewAuthorizer()
+	iAuthenticator = NewAuthenticator()
 	iTokenizer = NewJwtTokenizer()
+	iAccounter = NewAccounter()
 }
 
-func RegisterService() IAccountMaker {
+func AccountMaker() IAccountMaker {
 	return iAccountMaker
 }
 
-func LoginService() IAuthorizer {
-	return iAuthorizer
+func Authenticator() IAuthenticator {
+	return iAuthenticator
 }
 
-func JwtService() IJwtTokenizer {
+func Tokenizer() IJwtTokenizer {
 	return iTokenizer
+}
+
+func Accounter() IAccounter {
+	return iAccounter
 }
