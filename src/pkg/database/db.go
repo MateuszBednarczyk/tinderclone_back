@@ -24,7 +24,7 @@ func InitializeDb(config *DbConfig) {
 	if err != nil {
 		panic("Couldn't connect to db")
 	}
-	err = database.AutoMigrate(&domain.User{})
+	err = database.AutoMigrate(&domain.User{}, &domain.Country{}, &domain.City{})
 	if err != nil {
 		panic("Couldn't migrate")
 	}

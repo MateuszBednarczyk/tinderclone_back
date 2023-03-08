@@ -39,13 +39,23 @@ func (s *accountMaker) RegisterUser(requestBody dto.RegisterUser) *Result {
 		return CreateServiceResult("Couldn't hash password", 500, []interface{}{})
 	}
 
+	city := stores.SelectCityByName(requestBody.CityName)
+	if city == nil {
+		return CreateServiceResult("Service is not available in your city", 403, []interface{}{})
+	}
+
+	country := stores.SelectCountryByName(requestBody.Country)
+	if country == nil {
+		return CreateServiceResult("Service is not available in your country", 403, []interface{}{})
+	}
+
 	user := &domain.User{
 		Username: requestBody.Username,
 		Password: string(hash),
 		Name:     requestBody.Name,
 		Surname:  requestBody.Surname,
-		Country:  requestBody.Country,
-		City:     requestBody.City,
+		Country:  country.CountryID,
+		City:     city.CityID,
 	}
 
 	result := stores.SaveUser(user)
