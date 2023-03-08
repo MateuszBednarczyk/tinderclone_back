@@ -42,6 +42,10 @@ func (s *accountMaker) RegisterUser(requestBody dto.RegisterUser) *Result {
 	user := &domain.User{
 		Username: requestBody.Username,
 		Password: string(hash),
+		Name:     requestBody.Name,
+		Surname:  requestBody.Surname,
+		Country:  requestBody.Country,
+		City:     requestBody.City,
 	}
 
 	result := stores.SaveUser(user)

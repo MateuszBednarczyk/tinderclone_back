@@ -12,11 +12,7 @@ func AdminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		authHeader := c.Request().Header.Get("Authorization")
 		serviceResponse := services.Tokenizer().IsTokenValid(authHeader)
 
-		if len(serviceResponse.Content) == 0 {
-			return c.JSON(serviceResponse.Code, handlers.CreateHandlerResponse(serviceResponse))
-		}
-
-		if serviceResponse.Content[0] == false {
+		if !serviceResponse.Content[0].(bool) {
 			return c.JSON(serviceResponse.Code, handlers.CreateHandlerResponse(serviceResponse))
 		}
 

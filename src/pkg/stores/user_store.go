@@ -19,7 +19,7 @@ func IsUsernameAlreadyTaken(username string) bool {
 
 func SelectUserByUsername(username string) (*domain.User, error) {
 	var user domain.User
-	err := database.GetDb().Where("username = ?", username).Find(&user)
+	err := database.GetDb().Model(domain.User{Username: username}).First(&user)
 	if err.Error != nil {
 		return nil, err.Error
 	}

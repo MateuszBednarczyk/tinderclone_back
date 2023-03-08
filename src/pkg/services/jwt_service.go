@@ -78,7 +78,8 @@ func (s *jwtTokenizer) IsTokenValid(rawToken string) *Result {
 	var isTokenCorrect bool
 
 	if rawToken == "" {
-		return CreateServiceResult("Given token is empty", 403, []interface{}{})
+		isTokenCorrect = false
+		return CreateServiceResult("Given token is empty", 403, []interface{}{isTokenCorrect})
 	}
 
 	tokenString := strings.TrimPrefix(rawToken, "Bearer ")
