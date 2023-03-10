@@ -5,11 +5,13 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+
+	"tinderclone_back/src/pkg/domain"
 )
 
 type IJwtTokenizer interface {
-	GenerateTokens(username string, isAdmin bool) *Result
-	RefreshToken(rawToken string, isAdmin bool) *Result
+	GenerateTokens(user domain.User) *Result
+	RefreshToken(rawToken string) *Result
 	IsTokenValid(rawToken string) *Result
 }
 
@@ -17,8 +19,8 @@ type jwtTokenizer struct {
 }
 
 type JwtClaims struct {
-	Username string `json:"name"`
-	IsAdmin  bool   `json:"isAdmin"`
+	Username string      `json:"Username"`
+	Role     domain.Role `json:"Role"`
 	jwt.StandardClaims
 }
 
@@ -26,18 +28,18 @@ func NewJwtTokenizer() *jwtTokenizer {
 	return &jwtTokenizer{}
 }
 
-func (s *jwtTokenizer) GenerateTokens(username string, isAdmin bool) *Result {
+func (s *jwtTokenizer) GenerateTokens(user domain.User) *Result {
 	baseTokenClaims := JwtClaims{
-		username,
-		isAdmin,
+		user.Username,
+		user.Role,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(15 * time.Minute).Unix(),
 		},
 	}
 
 	refreshTokenClaims := JwtClaims{
-		username,
-		isAdmin,
+		user.Username,
+		user.Role,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(30 * time.Minute).Unix(),
 		},
@@ -61,12 +63,17 @@ func (s *jwtTokenizer) GenerateTokens(username string, isAdmin bool) *Result {
 	return CreateServiceResult("Tokens generated successfully", 200, content)
 }
 
-func (s *jwtTokenizer) RefreshToken(rawToken string, isAdmin bool) *Result {
+func (s *jwtTokenizer) RefreshToken(rawToken string) *Result {
 	if s.IsTokenValid(rawToken).Content[0] == false {
 		return CreateServiceResult("Invalid token", 403, nil)
 	}
 
-	tokens := s.GenerateTokens(rawToken, isAdmin)
+	claims, err := decodeJwt(rawToken)
+	if err != nil {
+		return CreateServiceResult("Invalid claims", 403, nil)
+	}
+
+	tokens := s.GenerateTokens(domain.User{Role: claims.Role, Username: claims.Username})
 	if tokens.Content == nil {
 		return CreateServiceResult(tokens.Message, tokens.Code, nil)
 	}
@@ -87,21 +94,25 @@ func (s *jwtTokenizer) IsTokenValid(rawToken string) *Result {
 		return CreateServiceResult("Given token format is invalid", 403, []interface{}{})
 	}
 
-	token, err := jwt.ParseWithClaims(tokenString, &JwtClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte("secret"), nil
-	})
+	claims, err := decodeJwt(tokenString)
 	if err != nil {
-		return CreateServiceResult("Invalid token", 403, []interface{}{})
-	}
-	if !token.Valid {
-		return CreateServiceResult("Invalid token", 403, []interface{}{})
-	}
-
-	claims, ok := token.Claims.(*JwtClaims)
-	if !ok {
 		return CreateServiceResult("Invalid token", 403, []interface{}{})
 	}
 	isTokenCorrect = true
 
 	return CreateServiceResult("Correct token", 200, []interface{}{isTokenCorrect, claims})
+}
+
+func decodeJwt(tokenString string) (*JwtClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &JwtClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte("secret"), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if !token.Valid {
+		return nil, err
+	}
+
+	return token.Claims.(*JwtClaims), nil
 }

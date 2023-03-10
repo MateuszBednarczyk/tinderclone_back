@@ -16,7 +16,7 @@ func AdminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			return c.JSON(serviceResponse.Code, handlers.CreateHandlerResponse(serviceResponse))
 		}
 
-		if serviceResponse.Content[1].(*services.JwtClaims).IsAdmin == true {
+		if serviceResponse.Content[1].(*services.JwtClaims).Role == 2 {
 			return next(c)
 		}
 
