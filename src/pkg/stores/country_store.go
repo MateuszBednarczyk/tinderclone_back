@@ -18,3 +18,8 @@ func SelectCountryByName(countryName string) *domain.Country {
 
 	return &country
 }
+
+func SaveCountry(entity *domain.Country) error {
+	result := database.GetDb().Create(&entity)
+	return result.Error
+}
