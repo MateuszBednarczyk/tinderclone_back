@@ -19,6 +19,13 @@ func SelectCountryByName(countryName string) *domain.Country {
 	return &country
 }
 
+func IsCountryAlreadyAvailable(countryName string) bool {
+	var country domain.Country
+	_ = database.GetDb().Where("country_name = ?", countryName).Find(&country)
+
+	return country.CountryName != ""
+}
+
 func SaveCountry(entity *domain.Country) error {
 	result := database.GetDb().Create(&entity)
 	return result.Error

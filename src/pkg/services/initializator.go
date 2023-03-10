@@ -4,12 +4,14 @@ var iAccountMaker IAccountMaker
 var iAuthenticator IAuthenticator
 var iTokenizer IJwtTokenizer
 var iAccounter IAccounter
+var iCountrier ICountrier
 
 func InitializeServices() {
 	iAccountMaker = NewAccountMaker()
 	iAuthenticator = NewAuthenticator()
 	iTokenizer = NewJwtTokenizer()
 	iAccounter = NewAccounter()
+	iCountrier = NewCountrier()
 }
 
 func AccountMaker() IAccountMaker {
@@ -26,4 +28,8 @@ func Tokenizer() IJwtTokenizer {
 
 func Accounter() IAccounter {
 	return iAccounter
+}
+
+func Countrier() ICountrier {
+	return iCountrier
 }
