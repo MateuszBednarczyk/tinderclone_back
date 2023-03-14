@@ -44,3 +44,23 @@ func TestIsUsernameValid(t *testing.T) {
 	assert.Equal(t, r1, false)
 	assert.Equal(t, r2, true)
 }
+
+// func TestRegisterUser(t *testing.T) {
+// 	requestBody := dto.RegisterUser{
+// 		Username: "a",
+// 		Password: "b",
+// 		Name:     "c",
+// 		Surname:  "d",
+// 		Country:  "PL",
+// 		CityName: "WWA",
+// 	}
+
+// 	userStoreMock := mocks.IUserStore{}
+// 	userStoreMock.On("SaveUser", mock.Anything).Return(nil)
+// 	userStoreMock.On("IsUsernameAlreadyTaken", mock.Anything).Return(false)
+
+// 	serviceInstance := services.NewAccountMaker(&userStoreMock, stores.NewCountryStore(), stores.NewCityStore())
+// 	result := serviceInstance.RegisterUser(requestBody)
+
+// 	assert.Equal(t, 200, result.Code)
+// }
