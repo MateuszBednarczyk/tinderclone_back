@@ -15,10 +15,17 @@ type IAccountMaker interface {
 }
 
 type accountMaker struct {
+	userStore    stores.IUserStore
+	countryStore stores.ICountryStore
+	cityStore    stores.ICityStore
 }
 
-func NewAccountMaker() *accountMaker {
-	return &accountMaker{}
+func NewAccountMaker(userStore stores.IUserStore, countryStore stores.ICountryStore, cityStore stores.ICityStore) *accountMaker {
+	return &accountMaker{
+		userStore:    userStore,
+		countryStore: countryStore,
+		cityStore:    cityStore,
+	}
 }
 
 func (s *accountMaker) RegisterUser(requestBody dto.RegisterUser) *Result {
@@ -30,7 +37,7 @@ func (s *accountMaker) RegisterUser(requestBody dto.RegisterUser) *Result {
 		return CreateServiceResult("Password cannot be blank", 400, []interface{}{})
 	}
 
-	if stores.IsUsernameAlreadyTaken(requestBody.Username) {
+	if s.userStore.IsUsernameAlreadyTaken(requestBody.Username) {
 		return CreateServiceResult("Username is already taken", 409, []interface{}{})
 	}
 
@@ -39,12 +46,12 @@ func (s *accountMaker) RegisterUser(requestBody dto.RegisterUser) *Result {
 		return CreateServiceResult("Couldn't hash password", 500, []interface{}{})
 	}
 
-	city := stores.SelectCityByName(requestBody.CityName)
+	city := s.cityStore.SelectCityByName(requestBody.CityName)
 	if city == nil {
 		return CreateServiceResult("Service is not available in your city", 403, []interface{}{})
 	}
 
-	country := stores.SelectCountryByName(requestBody.Country)
+	country := s.countryStore.SelectCountryByName(requestBody.Country)
 	if country == nil {
 		return CreateServiceResult("Service is not available in your country", 403, []interface{}{})
 	}
@@ -59,7 +66,7 @@ func (s *accountMaker) RegisterUser(requestBody dto.RegisterUser) *Result {
 		Role:     2,
 	}
 
-	result := stores.SaveUser(user)
+	result := s.userStore.SaveUser(user)
 	if result != nil {
 		return CreateServiceResult("There was an error, while attempt of saving user", 500, []interface{}{})
 	}

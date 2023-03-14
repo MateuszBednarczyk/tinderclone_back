@@ -7,14 +7,17 @@ type IAccounter interface {
 }
 
 type accounter struct {
+	userStore stores.IUserStore
 }
 
-func NewAccounter() *accounter {
-	return &accounter{}
+func NewAccounter(store stores.IUserStore) *accounter {
+	return &accounter{
+		userStore: store,
+	}
 }
 
 func (s *accounter) GetAccountInformations(username string) *Result {
-	user, err := stores.SelectUserByUsername(username)
+	user, err := s.userStore.SelectUserByUsername(username)
 	if err != nil {
 		return CreateServiceResult("Couldn't find an user", 404, []interface{}{})
 	}

@@ -12,16 +12,19 @@ type IAuthenticator interface {
 }
 
 type authenticator struct {
+	userStore stores.IUserStore
 }
 
-func NewAuthenticator() *authenticator {
-	return &authenticator{}
+func NewAuthenticator(store stores.IUserStore) *authenticator {
+	return &authenticator{
+		userStore: store,
+	}
 }
 
 func (s *authenticator) LoginUser(requestBody dto.Credentials) *Result {
 	var err error
 
-	foundUser, err := stores.SelectUserByUsername(requestBody.Username)
+	foundUser, err := s.userStore.SelectUserByUsername(requestBody.Username)
 	if err != nil {
 		return CreateServiceResult("Couldn't find user", 404, []interface{}{err.Error()})
 	}

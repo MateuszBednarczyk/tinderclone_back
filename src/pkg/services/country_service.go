@@ -10,18 +10,21 @@ type ICountrier interface {
 }
 
 type countrier struct {
+	countryStore stores.ICountryStore
 }
 
-func NewCountrier() *countrier {
-	return &countrier{}
+func NewCountrier(store stores.ICountryStore) *countrier {
+	return &countrier{
+		countryStore: store,
+	}
 }
 
 func (s *countrier) SaveNewCountry(countryName string) *Result {
-	if stores.IsCountryAlreadyAvailable(countryName) {
+	if s.countryStore.IsCountryAlreadyAvailable(countryName) {
 		return CreateServiceResult("Country is already available", 409, []interface{}{})
 	}
 
-	err := stores.SaveCountry(&domain.Country{
+	err := s.countryStore.SaveCountry(&domain.Country{
 		CountryName: countryName,
 		Cities:      []domain.City{},
 	})

@@ -5,7 +5,20 @@ import (
 	"tinderclone_back/src/pkg/domain"
 )
 
-func SelectCountryByName(countryName string) *domain.Country {
+type ICountryStore interface {
+	SelectCountryByName(countryName string) *domain.Country
+	IsCountryAlreadyAvailable(countryName string) bool
+	SaveCountry(entity *domain.Country) error
+}
+
+type countryStore struct {
+}
+
+func NewCountryStore() *countryStore {
+	return &countryStore{}
+}
+
+func (s *countryStore) SelectCountryByName(countryName string) *domain.Country {
 	var country domain.Country
 	err := database.GetDb().Where("country_name = ?", countryName).Find(&country)
 	if err.Error != nil {
@@ -19,14 +32,14 @@ func SelectCountryByName(countryName string) *domain.Country {
 	return &country
 }
 
-func IsCountryAlreadyAvailable(countryName string) bool {
+func (s *countryStore) IsCountryAlreadyAvailable(countryName string) bool {
 	var country domain.Country
 	_ = database.GetDb().Where("country_name = ?", countryName).Find(&country)
 
 	return country.CountryName != ""
 }
 
-func SaveCountry(entity *domain.Country) error {
+func (s *countryStore) SaveCountry(entity *domain.Country) error {
 	result := database.GetDb().Create(&entity)
 	return result.Error
 }

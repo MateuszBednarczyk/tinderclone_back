@@ -16,4 +16,4 @@ func main() {
 	go launchServer(&wg, ch)
 	fmt.Println(<-ch)
 	wg.Wait()
-}
+}		
