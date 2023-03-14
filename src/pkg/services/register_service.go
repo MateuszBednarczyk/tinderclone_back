@@ -22,11 +22,11 @@ func NewAccountMaker() *accountMaker {
 }
 
 func (s *accountMaker) RegisterUser(requestBody dto.RegisterUser) *Result {
-	if !isUsernameValid(requestBody.Username) {
+	if !IsUsernameValid(requestBody.Username) {
 		return CreateServiceResult("Username cannot be blank", 400, []interface{}{})
 	}
 
-	if !isPasswordValid(requestBody.Password) {
+	if !IsPasswordValid(requestBody.Password) {
 		return CreateServiceResult("Password cannot be blank", 400, []interface{}{})
 	}
 
@@ -34,7 +34,7 @@ func (s *accountMaker) RegisterUser(requestBody dto.RegisterUser) *Result {
 		return CreateServiceResult("Username is already taken", 409, []interface{}{})
 	}
 
-	hash, err := hashPassword(requestBody.Password)
+	hash, err := HashPassword(requestBody.Password)
 	if err != nil {
 		return CreateServiceResult("Couldn't hash password", 500, []interface{}{})
 	}
@@ -67,14 +67,14 @@ func (s *accountMaker) RegisterUser(requestBody dto.RegisterUser) *Result {
 	return CreateServiceResult("Account created", 200, []interface{}{})
 }
 
-func isUsernameValid(username string) bool {
+func IsUsernameValid(username string) bool {
 	return len(strings.TrimSpace(username)) > 0
 }
 
-func isPasswordValid(password string) bool {
+func IsPasswordValid(password string) bool {
 	return len(strings.TrimSpace(password)) > 0
 }
 
-func hashPassword(p string) ([]byte, error) {
+func HashPassword(p string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(p), bcrypt.DefaultCost)
 }

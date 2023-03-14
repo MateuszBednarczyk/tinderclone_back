@@ -18,3 +18,10 @@ func SelectCityByName(cityName string) *domain.City {
 
 	return &city
 }
+
+func IsCityAlreadyAvailable(cityName string) bool {
+	var city domain.City
+	_ = database.GetDb().Where("city_name = ?", cityName).Find(&city)
+
+	return city.CityName != ""
+}
