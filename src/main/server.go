@@ -60,5 +60,5 @@ func initializeHandlers(si *echo.Echo) {
 	si.POST("api/"+apiVersion+"/user", registerHandler.HandleRegister)
 	si.POST("api/"+apiVersion+"/auth", loginHandler.HandleLogin)
 
-	si.POST("api/"+apiVersion+"/country/:name", countrierHandler.HandleSaveCountry)
+	si.POST("api/"+apiVersion+"/country", countrierHandler.HandleSaveCountry)
 }
