@@ -1,6 +1,7 @@
 package stores
 
 import (
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 
 	"tinderclone_back/src/pkg/domain"
@@ -10,6 +11,7 @@ type ICityStore interface {
 	SelectCityByName(cityName string) *domain.City
 	IsCityAlreadyAvailable(cityName string) bool
 	SaveNewCity(entity *domain.City) error
+	IsCityInCountryAlreadyAvailable(cityName string, countryID uuid.UUID) bool
 }
 
 type cityStore struct {
@@ -44,6 +46,13 @@ func (s *cityStore) SaveNewCity(entity *domain.City) error {
 func (s *cityStore) IsCityAlreadyAvailable(cityName string) bool {
 	var city domain.City
 	_ = s.db.Where("city_name = ?", cityName).Find(&city)
+
+	return city.CityName != ""
+}
+
+func (s *cityStore) IsCityInCountryAlreadyAvailable(cityName string, countryID uuid.UUID) bool {
+	var city domain.City
+	_ = s.db.Where("country_id = ?", countryID).Find(&city)
 
 	return city.CityName != ""
 }

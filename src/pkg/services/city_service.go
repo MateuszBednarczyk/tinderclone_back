@@ -23,13 +23,16 @@ func NewCitier(cityStore stores.ICityStore, countryStore stores.ICountryStore) *
 func (s *citier) SaveNewCity(cityName string, countryName string) *Result {
 	cityName = strings.ToUpper(cityName)
 	countryName = strings.ToUpper(countryName)
+
 	if !s.countryStore.IsCountryAlreadyAvailable(countryName) {
-		return CreateServiceResult("Can't save city, because country doesn't persist", 401, []interface{}{})
+		return CreateServiceResult("Can't save city, because country doesn't persist", 404, []interface{}{})
 	}
-	if s.countryStore.IsCityAlreadyAvailableInCountry(countryName, cityName) {
-		return CreateServiceResult("City is already available", 401, []interface{}{})
-	}
+
 	country := s.countryStore.SelectCountryByName(countryName)
+	if s.cityStore.IsCityInCountryAlreadyAvailable(cityName, country.CountryID) {
+		return CreateServiceResult("City is already available", 409, []interface{}{})
+	}
+
 	city := &domain.City{
 		CityName: strings.ToUpper(cityName),
 		Country:  *country,
