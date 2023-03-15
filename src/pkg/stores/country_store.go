@@ -46,7 +46,7 @@ func (s *countryStore) IsCountryAlreadyAvailable(countryName string) bool {
 
 func (s *countryStore) IsCityAlreadyAvailableInCountry(countryName string, cityName string) bool {
 	var country domain.Country
-	s.db.Where("city_name = ?", cityName).Find(&country)
+	s.db.Where("country_name = ?", countryName).Find(&country)
 	for _, city := range country.Cities {
 		if city.CityName == cityName {
 			return true

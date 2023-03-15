@@ -17,10 +17,12 @@ type citier struct {
 }
 
 func NewCitier(cityStore stores.ICityStore, countryStore stores.ICountryStore) *citier {
-	return &citier{}
+	return &citier{cityStore: cityStore, countryStore: countryStore}
 }
 
 func (s *citier) SaveNewCity(cityName string, countryName string) *Result {
+	cityName = strings.ToUpper(cityName)
+	countryName = strings.ToUpper(countryName)
 	if !s.countryStore.IsCountryAlreadyAvailable(countryName) {
 		return CreateServiceResult("Can't save city, because country doesn't persist", 401, []interface{}{})
 	}
