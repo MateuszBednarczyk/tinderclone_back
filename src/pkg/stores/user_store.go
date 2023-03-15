@@ -1,7 +1,8 @@
 package stores
 
 import (
-	"tinderclone_back/src/pkg/database"
+	"gorm.io/gorm"
+
 	"tinderclone_back/src/pkg/domain"
 )
 
@@ -12,27 +13,30 @@ type IUserStore interface {
 }
 
 type userStore struct {
+	db *gorm.DB
 }
 
-func NewUserStore() *userStore {
-	return &userStore{}
+func NewUserStore(db *gorm.DB) *userStore {
+	return &userStore{
+		db: db,
+	}
 }
 
 func (s *userStore) SaveUser(entity *domain.User) error {
-	result := database.GetDb().Create(&entity)
+	result := s.db.Create(&entity)
 	return result.Error
 }
 
 func (s *userStore) IsUsernameAlreadyTaken(username string) bool {
 	var user domain.User
-	_ = database.GetDb().Where("username = ?", username).Find(&user)
+	_ = s.db.Where("username = ?", username).Find(&user)
 
 	return user.Username != ""
 }
 
 func (s *userStore) SelectUserByUsername(username string) (*domain.User, error) {
 	var user domain.User
-	err := database.GetDb().Model(domain.User{Username: username}).First(&user)
+	err := s.db.Model(domain.User{Username: username}).First(&user)
 	if err.Error != nil {
 		return nil, err.Error
 	}

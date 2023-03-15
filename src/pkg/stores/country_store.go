@@ -1,7 +1,8 @@
 package stores
 
 import (
-	"tinderclone_back/src/pkg/database"
+	"gorm.io/gorm"
+
 	"tinderclone_back/src/pkg/domain"
 )
 
@@ -12,15 +13,18 @@ type ICountryStore interface {
 }
 
 type countryStore struct {
+	db *gorm.DB
 }
 
-func NewCountryStore() *countryStore {
-	return &countryStore{}
+func NewCountryStore(db *gorm.DB) *countryStore {
+	return &countryStore{
+		db: db,
+	}
 }
 
 func (s *countryStore) SelectCountryByName(countryName string) *domain.Country {
 	var country domain.Country
-	err := database.GetDb().Where("country_name = ?", countryName).Find(&country)
+	err := s.db.Where("country_name = ?", countryName).Find(&country)
 	if err.Error != nil {
 		return nil
 	}
@@ -34,12 +38,12 @@ func (s *countryStore) SelectCountryByName(countryName string) *domain.Country {
 
 func (s *countryStore) IsCountryAlreadyAvailable(countryName string) bool {
 	var country domain.Country
-	_ = database.GetDb().Where("country_name = ?", countryName).Find(&country)
+	_ = s.db.Where("country_name = ?", countryName).Find(&country)
 
 	return country.CountryName != ""
 }
 
 func (s *countryStore) SaveCountry(entity *domain.Country) error {
-	result := database.GetDb().Create(&entity)
+	result := s.db.Create(&entity)
 	return result.Error
 }

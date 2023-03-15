@@ -1,13 +1,15 @@
 package stores
 
+import "gorm.io/gorm"
+
 var iUserStore IUserStore
 var iCountryStore ICountryStore
 var iCityStore ICityStore
 
-func InitializeStores() {
-	iUserStore = NewUserStore()
-	iCountryStore = NewCountryStore()
-	iCityStore = NewCityStore()
+func InitializeStores(db *gorm.DB) {
+	iUserStore = NewUserStore(db)
+	iCountryStore = NewCountryStore(db)
+	iCityStore = NewCityStore(db)
 }
 
 func UserStore() IUserStore {

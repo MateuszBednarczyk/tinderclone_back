@@ -30,7 +30,7 @@ func launchServer(wg *sync.WaitGroup, ch chan string) {
 		wg.Done()
 	}
 	serverInstance = echo.New()
-	database.InitializeDb(&database.DbConfig{
+	db := database.InitializeDb(&database.DbConfig{
 		DbUsername: dbUsername,
 		DbPassword: dbPassword,
 		DbPort:     dbPort,
@@ -38,7 +38,7 @@ func launchServer(wg *sync.WaitGroup, ch chan string) {
 		DbName:     dbName,
 	})
 	initializeHandlers(serverInstance)
-	stores.InitializeStores()
+	stores.InitializeStores(db)
 	services.InitializeServices()
 	serverInstance.Logger.Fatal(serverInstance.Start(server + ":" + port))
 	wg.Done()

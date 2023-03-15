@@ -17,7 +17,7 @@ type DbConfig struct {
 
 var database *gorm.DB
 
-func InitializeDb(config *DbConfig) {
+func InitializeDb(config *DbConfig) *gorm.DB {
 	var err error
 	dsn := "host=" + config.DbHost + " user=" + config.DbUsername + " dbname=" + config.DbName + " port=" + config.DbPort
 	database, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -28,8 +28,6 @@ func InitializeDb(config *DbConfig) {
 	if err != nil {
 		panic("Couldn't migrate")
 	}
-}
 
-func GetDb() *gorm.DB {
 	return database
 }
