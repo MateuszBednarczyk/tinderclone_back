@@ -19,8 +19,8 @@ func TestGetAccountInformations(t *testing.T) {
 		Password: "pass",
 		Name:     "Admin",
 		Surname:  "Adminsky",
-		Country:  uuid.New(),
-		City:     uuid.New(),
+		Country:  domain.Country{},
+		City:     domain.City{},
 		Role:     domain.Role(2),
 	}
 
