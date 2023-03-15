@@ -7,5 +7,5 @@ import (
 type City struct {
 	CityID   uuid.UUID `gorm:"primary_key;type:uuid;default:gen_random_uuid()" json:"Id"`
 	CityName string    `gorm:"type:varchar(40);not null" json:"Name"`
-	Country  Country   `gorm:"foreignKey:CountryID;type:uuid" json:"Country"`
+	Country  Country   `gorm:"foreignKey:CountryID;type:uuidconstraint:OnUpdate:CASCADE,OnDelete:DELETE;" json:"Country"`
 }

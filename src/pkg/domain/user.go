@@ -18,7 +18,7 @@ type User struct {
 	Password string    `gorm:"not null" json:"Password"`
 	Name     string    `gorm:"not null;type:varchar(25)" json:"Name"`
 	Surname  string    `gorm:"not null;type:varchar(30)" json:"Surname"`
-	Country  uuid.UUID `gorm:"type:uuid;foreignKey:CountryID" json:"Country"`
-	City     uuid.UUID `gorm:"type:uuid;foreignKey:CityID" json:"City"`
+	Country  uuid.UUID `gorm:"type:uuid;foreignKey:CountryIDconstraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"Country"`
+	City     uuid.UUID `gorm:"type:uuid;foreignKey:CityID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"City"`
 	Role     Role      `gorm:"type:int" json:"Role"`
 }

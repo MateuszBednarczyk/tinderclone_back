@@ -9,6 +9,7 @@ import (
 type ICityStore interface {
 	SelectCityByName(cityName string) *domain.City
 	IsCityAlreadyAvailable(cityName string) bool
+	SaveNewCity(entity *domain.City) error
 }
 
 type cityStore struct {
@@ -33,6 +34,11 @@ func (s *cityStore) SelectCityByName(cityName string) *domain.City {
 	}
 
 	return &city
+}
+
+func (s *cityStore) SaveNewCity(entity *domain.City) error {
+	result := s.db.Create(&entity)
+	return result.Error
 }
 
 func (s *cityStore) IsCityAlreadyAvailable(cityName string) bool {

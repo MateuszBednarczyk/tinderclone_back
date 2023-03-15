@@ -1,6 +1,8 @@
 package services
 
 import (
+	"strings"
+
 	"tinderclone_back/src/pkg/domain"
 	"tinderclone_back/src/pkg/stores"
 )
@@ -25,7 +27,7 @@ func (s *countrier) SaveNewCountry(countryName string) *Result {
 	}
 
 	err := s.countryStore.SaveCountry(&domain.Country{
-		CountryName: countryName,
+		CountryName: strings.ToUpper(countryName),
 		Cities:      []domain.City{},
 	})
 	if err != nil {
