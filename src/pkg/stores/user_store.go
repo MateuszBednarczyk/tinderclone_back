@@ -36,7 +36,7 @@ func (s *userStore) IsUsernameAlreadyTaken(username string) bool {
 
 func (s *userStore) SelectUserByUsername(username string) (*domain.User, error) {
 	var user domain.User
-	err := s.db.Model(domain.User{Username: username}).First(&user)
+	err := s.db.First(&user, "username = ?", username)
 	if err.Error != nil {
 		return nil, err.Error
 	}

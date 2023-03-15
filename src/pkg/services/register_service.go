@@ -65,7 +65,7 @@ func (s *accountMaker) RegisterUser(requestBody dto.RegisterUser) *Result {
 		CountryID: country.CountryID,
 		City:      *city,
 		CityID:    city.CityID,
-		Role:      2,
+		Role:      domain.Role(2),
 	}
 
 	result := s.userStore.SaveUser(user)

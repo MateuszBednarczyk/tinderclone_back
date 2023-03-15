@@ -63,7 +63,7 @@ func initializeHandlers(si *echo.Echo) {
 	si.POST("api/"+apiVersion+"/user", registerHandler.HandleRegister)
 	si.POST("api/"+apiVersion+"/auth", loginHandler.HandleLogin)
 
-	si.POST("api/"+apiVersion+"/country", countrierHandler.HandleSaveCountry)
+	si.POST("api/"+apiVersion+"/country", countrierHandler.HandleSaveCountry, middlewares.AdminMiddleware)
 
-	si.POST("api/"+apiVersion+"/city", citierHandler.HandleSaveNewCity)
+	si.POST("api/"+apiVersion+"/city", citierHandler.HandleSaveNewCity, middlewares.AdminMiddleware)
 }
