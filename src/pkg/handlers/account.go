@@ -11,15 +11,18 @@ type IAccounterHandler interface {
 }
 
 type accounterHandler struct {
+	accounter services.IAccounter
 }
 
-func NewAccounterHandler() *accounterHandler {
-	return &accounterHandler{}
+func NewAccounterHandler(accounter services.IAccounter) *accounterHandler {
+	return &accounterHandler{
+		accounter: accounter,
+	}
 }
 
 func (h *accounterHandler) GetAccountInformations(c echo.Context) error {
 	username := c.QueryParam("username")
-	serviceResult := services.Accounter().GetAccountInformations(username)
+	serviceResult := h.accounter.GetAccountInformations(username)
 
 	return c.JSON(serviceResult.Code, CreateHandlerResponse(serviceResult))
 }

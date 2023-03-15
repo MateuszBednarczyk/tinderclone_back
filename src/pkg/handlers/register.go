@@ -13,10 +13,13 @@ type IRegisterHandler interface {
 }
 
 type registerHandler struct {
+	accountMaker services.IAccountMaker
 }
 
-func NewRegisterHandler() *registerHandler {
-	return &registerHandler{}
+func NewRegisterHandler(accountMaker services.IAccountMaker) *registerHandler {
+	return &registerHandler{
+		accountMaker: accountMaker,
+	}
 }
 
 func (h *registerHandler) HandleRegister(c echo.Context) error {

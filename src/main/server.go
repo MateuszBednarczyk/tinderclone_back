@@ -37,19 +37,20 @@ func launchServer(wg *sync.WaitGroup, ch chan string) {
 		DbHost:     dbHost,
 		DbName:     dbName,
 	})
-	initializeHandlers(serverInstance)
 	stores.InitializeStores(db)
 	services.InitializeServices()
+	initializeHandlers(serverInstance)
 	serverInstance.Logger.Fatal(serverInstance.Start(server + ":" + port))
 	wg.Done()
 }
 
 func initializeHandlers(si *echo.Echo) {
 	healthCheckHandler := handlers.NewHealthCheckHandler()
-	registerHandler := handlers.NewRegisterHandler()
-	loginHandler := handlers.NewLoginHandler()
-	accountHandler := handlers.NewAccounterHandler()
-	countrierHandler := handlers.NewCountrierHandler()
+	registerHandler := handlers.NewRegisterHandler(services.AccountMaker())
+	loginHandler := handlers.NewLoginHandler(services.Authenticator())
+	accountHandler := handlers.NewAccounterHandler(services.Accounter())
+	countrierHandler := handlers.NewCountrierHandler(services.Countrier())
+	citierHandler := handlers.NewCityHandler(services.Citier())
 
 	adminGroup := serverInstance.Group("api/" + apiVersion + "/health")
 	adminGroup.Use(echojwt.JWT([]byte("secret")))
@@ -63,4 +64,6 @@ func initializeHandlers(si *echo.Echo) {
 	si.POST("api/"+apiVersion+"/auth", loginHandler.HandleLogin)
 
 	si.POST("api/"+apiVersion+"/country", countrierHandler.HandleSaveCountry)
+
+	si.POST("api/"+apiVersion+"/city", citierHandler.HandleSaveNewCity)
 }

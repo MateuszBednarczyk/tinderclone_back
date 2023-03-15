@@ -11,15 +11,18 @@ type ICountrierHandler interface {
 }
 
 type countrierHandler struct {
+	countrier services.ICountrier
 }
 
-func NewCountrierHandler() *countrierHandler {
-	return &countrierHandler{}
+func NewCountrierHandler(countrier services.ICountrier) *countrierHandler {
+	return &countrierHandler{
+		countrier: countrier,
+	}
 }
 
 func (h *countrierHandler) HandleSaveCountry(c echo.Context) error {
 	countryName := c.QueryParam("name")
-	serviceResult := services.Countrier().SaveNewCountry(countryName)
+	serviceResult := h.countrier.SaveNewCountry(countryName)
 
 	return c.JSON(serviceResult.Code, CreateHandlerResponse(serviceResult))
 }

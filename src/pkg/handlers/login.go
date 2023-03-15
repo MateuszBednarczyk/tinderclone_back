@@ -12,10 +12,13 @@ type ILoginHandler interface {
 }
 
 type loginHandler struct {
+	authenticator services.IAuthenticator
 }
 
-func NewLoginHandler() *loginHandler {
-	return &loginHandler{}
+func NewLoginHandler(authenticator services.IAuthenticator) *loginHandler {
+	return &loginHandler{
+		authenticator: authenticator,
+	}
 }
 
 func (h *loginHandler) HandleLogin(c echo.Context) error {
@@ -24,7 +27,7 @@ func (h *loginHandler) HandleLogin(c echo.Context) error {
 	if err != nil {
 		return c.JSON(400, "Couldn't read the dto")
 	}
-	serviceResult := services.Authenticator().LoginUser(requestBody)
+	serviceResult := h.authenticator.LoginUser(requestBody)
 
 	return c.JSON(serviceResult.Code, CreateHandlerResponse(serviceResult))
 }
