@@ -13,6 +13,20 @@ type ICountryStore struct {
 	mock.Mock
 }
 
+// IsCityAlreadyAvailableInCountry provides a mock function with given fields: countryName, cityName
+func (_m *ICountryStore) IsCityAlreadyAvailableInCountry(countryName string, cityName string) bool {
+	ret := _m.Called(countryName, cityName)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(string, string) bool); ok {
+		r0 = rf(countryName, cityName)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
 // IsCountryAlreadyAvailable provides a mock function with given fields: countryName
 func (_m *ICountryStore) IsCountryAlreadyAvailable(countryName string) bool {
 	ret := _m.Called(countryName)
