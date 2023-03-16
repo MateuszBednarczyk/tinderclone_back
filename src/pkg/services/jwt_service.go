@@ -82,11 +82,8 @@ func (s *jwtTokenizer) RefreshToken(rawToken string) *Result {
 }
 
 func (s *jwtTokenizer) IsTokenValid(rawToken string) *Result {
-	var isTokenCorrect bool
-
-	if rawToken == "" {
-		isTokenCorrect = false
-		return CreateServiceResult("Given token is empty", 403, []interface{}{isTokenCorrect})
+	if strings.TrimSpace(rawToken) == "" {
+		return CreateServiceResult("Given token is empty", 403, []interface{}{})
 	}
 
 	tokenString := strings.TrimPrefix(rawToken, "Bearer ")
@@ -98,9 +95,8 @@ func (s *jwtTokenizer) IsTokenValid(rawToken string) *Result {
 	if err != nil {
 		return CreateServiceResult("Invalid token", 403, []interface{}{})
 	}
-	isTokenCorrect = true
 
-	return CreateServiceResult("Correct token", 200, []interface{}{isTokenCorrect, claims})
+	return CreateServiceResult("Correct token", 200, []interface{}{claims})
 }
 
 func decodeJwt(tokenString string) (*JwtClaims, error) {
