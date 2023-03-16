@@ -46,14 +46,22 @@ func (s *accountMaker) RegisterUser(requestBody dto.RegisterUser) *Result {
 		return CreateServiceResult("Couldn't hash password", 500, []interface{}{})
 	}
 
-	city := s.cityStore.SelectCityByName(requestBody.CityName)
-	if city == nil {
-		return CreateServiceResult("Service is not available in your city", 403, []interface{}{})
+	cities := []domain.City{}
+	for _, city := range requestBody.Cities {
+		cityEntity := s.cityStore.SelectCityByName(city)
+		if cityEntity == nil {
+			return CreateServiceResult("Service is not available in: "+city, 404, []interface{}{})
+		}
+		cities = append(cities, *cityEntity)
 	}
 
-	country := s.countryStore.SelectCountryByName(requestBody.Country)
-	if country == nil {
-		return CreateServiceResult("Service is not available in your country", 403, []interface{}{})
+	countries := []domain.Country{}
+	for _, country := range requestBody.Countries {
+		countryEntity := s.countryStore.SelectCountryByName(country)
+		if countryEntity == nil {
+			return CreateServiceResult("Service is not available in: "+country, 404, []interface{}{})
+		}
+		countries = append(countries, *countryEntity)
 	}
 
 	user := &domain.User{
@@ -61,10 +69,8 @@ func (s *accountMaker) RegisterUser(requestBody dto.RegisterUser) *Result {
 		Password:  string(hash),
 		Name:      requestBody.Name,
 		Surname:   requestBody.Surname,
-		Country:   *country,
-		CountryID: country.CountryID,
-		City:      *city,
-		CityID:    city.CityID,
+		Countries: countries,
+		Cities:    cities,
 		Role:      domain.Role(2),
 	}
 

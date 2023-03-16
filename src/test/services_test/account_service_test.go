@@ -14,14 +14,14 @@ import (
 
 func TestGetAccountInformations(t *testing.T) {
 	mockUser := domain.User{
-		UserID:   uuid.New(),
-		Username: "admin",
-		Password: "pass",
-		Name:     "Admin",
-		Surname:  "Adminsky",
-		Country:  domain.Country{},
-		City:     domain.City{},
-		Role:     domain.Role(2),
+		UserID:    uuid.New(),
+		Username:  "admin",
+		Password:  "pass",
+		Name:      "Admin",
+		Surname:   "Adminsky",
+		Countries: []domain.Country{},
+		Cities:    []domain.City{},
+		Role:      domain.Role(2),
 	}
 
 	userStoreMock := mocks.IUserStore{}

@@ -52,12 +52,12 @@ func TestIsUsernameValid(t *testing.T) {
 
 func TestRegisterUser(t *testing.T) {
 	requestBody := dto.RegisterUser{
-		Username: "a",
-		Password: "b",
-		Name:     "c",
-		Surname:  "d",
-		Country:  "PL",
-		CityName: "WWA",
+		Username:  "a",
+		Password:  "b",
+		Name:      "c",
+		Surname:   "d",
+		Countries: []string{"PL"},
+		Cities:    []string{"WWA"},
 	}
 
 	country := domain.Country{
