@@ -10,6 +10,7 @@ type IUserStore interface {
 	SaveUser(entity *domain.User) error
 	IsUsernameAlreadyTaken(username string) bool
 	SelectUserByUsername(username string) (*domain.User, error)
+	UpdateUserRole(username string, role domain.Role) error
 }
 
 type userStore struct {
@@ -42,4 +43,9 @@ func (s *userStore) SelectUserByUsername(username string) (*domain.User, error) 
 	}
 
 	return &user, nil
+}
+
+func (s *userStore) UpdateUserRole(username string, role domain.Role) error {
+	result := s.db.Model(&domain.User{}).Where("username = ?", username).Update("role", role)
+	return result.Error
 }

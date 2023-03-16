@@ -67,6 +67,20 @@ func (_m *IUserStore) SelectUserByUsername(username string) (*domain.User, error
 	return r0, r1
 }
 
+// UpdateUserRole provides a mock function with given fields: username, role
+func (_m *IUserStore) UpdateUserRole(username string, role domain.Role) error {
+	ret := _m.Called(username, role)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, domain.Role) error); ok {
+		r0 = rf(username, role)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 type mockConstructorTestingTNewIUserStore interface {
 	mock.TestingT
 	Cleanup(func())

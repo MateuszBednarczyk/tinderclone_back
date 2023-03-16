@@ -8,6 +8,7 @@ var iTokenizer IJwtTokenizer
 var iAccounter IAccounter
 var iCountrier ICountrier
 var iCitier ICitier
+var iPermitter IPermitter
 
 func InitializeServices() {
 	iAccountMaker = NewAccountMaker(stores.UserStore(), stores.CountryStore(), stores.CityStore())
@@ -16,6 +17,7 @@ func InitializeServices() {
 	iAccounter = NewAccounter(stores.UserStore())
 	iCountrier = NewCountrier(stores.CountryStore())
 	iCitier = NewCitier(stores.CityStore(), stores.CountryStore())
+	iPermitter = NewPermitter(stores.UserStore())
 }
 
 func AccountMaker() IAccountMaker {
@@ -40,4 +42,8 @@ func Countrier() ICountrier {
 
 func Citier() ICitier {
 	return iCitier
+}
+
+func Permitter() IPermitter {
+	return iPermitter
 }

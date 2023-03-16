@@ -51,6 +51,7 @@ func initializeHandlers(si *echo.Echo) {
 	accountHandler := handlers.NewAccounterHandler(services.Accounter())
 	countrierHandler := handlers.NewCountrierHandler(services.Countrier())
 	citierHandler := handlers.NewCityHandler(services.Citier())
+	permitterHandler := handlers.NewPermitterHandler(services.Permitter())
 
 	adminGroup := serverInstance.Group("api/" + apiVersion + "/health")
 	adminGroup.Use(echojwt.JWT([]byte("secret")))
@@ -66,4 +67,6 @@ func initializeHandlers(si *echo.Echo) {
 	si.POST("api/"+apiVersion+"/country", countrierHandler.HandleSaveCountry, middlewares.AdminMiddleware)
 
 	si.POST("api/"+apiVersion+"/city", citierHandler.HandleSaveNewCity, middlewares.AdminMiddleware)
+
+	si.PATCH("api/"+apiVersion+"/permission", permitterHandler.HandleGiveUserAdminPermission, middlewares.AdminMiddleware)
 }
