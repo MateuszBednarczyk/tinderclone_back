@@ -8,6 +8,7 @@ import (
 
 type ICountrierHandler interface {
 	HandleSaveCountry(c echo.Context) error
+	GetAllCountriesNames(c echo.Context) error
 }
 
 type countrierHandler struct {
@@ -24,5 +25,10 @@ func (h *countrierHandler) HandleSaveCountry(c echo.Context) error {
 	countryName := c.QueryParam("name")
 	serviceResult := h.countrier.SaveNewCountry(countryName)
 
+	return c.JSON(serviceResult.Code, CreateHandlerResponse(serviceResult))
+}
+
+func (h *countrierHandler) HandleGetAllCountriesNames(c echo.Context) error {
+	serviceResult := h.countrier.GetAllCountriesNames()
 	return c.JSON(serviceResult.Code, CreateHandlerResponse(serviceResult))
 }

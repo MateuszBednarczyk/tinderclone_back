@@ -57,9 +57,12 @@ func (s *accountMaker) RegisterUser(requestBody dto.RegisterUser) *Result {
 
 	countries := []domain.Country{}
 	for _, country := range requestBody.Countries {
-		countryEntity := s.countryStore.SelectCountryByName(country)
+		countryEntity, err := s.countryStore.SelectCountryByName(country)
 		if countryEntity == nil {
 			return CreateServiceResult("Service is not available in: "+country, 404, []interface{}{})
+		}
+		if err != nil {
+			return CreateServiceResult("Error while trying to get country from db", 500, []interface{}{})
 		}
 		countries = append(countries, *countryEntity)
 	}

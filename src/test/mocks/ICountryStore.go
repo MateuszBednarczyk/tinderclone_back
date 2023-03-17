@@ -13,6 +13,32 @@ type ICountryStore struct {
 	mock.Mock
 }
 
+// GetAllCountriesNames provides a mock function with given fields:
+func (_m *ICountryStore) GetAllCountriesNames() ([]string, error) {
+	ret := _m.Called()
+
+	var r0 []string
+	var r1 error
+	if rf, ok := ret.Get(0).(func() ([]string, error)); ok {
+		return rf()
+	}
+	if rf, ok := ret.Get(0).(func() []string); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]string)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // IsCountryAlreadyAvailable provides a mock function with given fields: countryName
 func (_m *ICountryStore) IsCountryAlreadyAvailable(countryName string) bool {
 	ret := _m.Called(countryName)
@@ -42,10 +68,14 @@ func (_m *ICountryStore) SaveCountry(entity *domain.Country) error {
 }
 
 // SelectCountryByName provides a mock function with given fields: countryName
-func (_m *ICountryStore) SelectCountryByName(countryName string) *domain.Country {
+func (_m *ICountryStore) SelectCountryByName(countryName string) (*domain.Country, error) {
 	ret := _m.Called(countryName)
 
 	var r0 *domain.Country
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string) (*domain.Country, error)); ok {
+		return rf(countryName)
+	}
 	if rf, ok := ret.Get(0).(func(string) *domain.Country); ok {
 		r0 = rf(countryName)
 	} else {
@@ -54,7 +84,13 @@ func (_m *ICountryStore) SelectCountryByName(countryName string) *domain.Country
 		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(countryName)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 type mockConstructorTestingTNewICountryStore interface {
