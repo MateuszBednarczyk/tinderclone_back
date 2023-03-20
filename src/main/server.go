@@ -62,7 +62,7 @@ func initializeHandlers(si *echo.Echo) {
 
 	userGroup := serverInstance.Group("/api/" + apiVersion + "/user")
 	userGroup.Use(echojwt.JWT([]byte("secret")))
-	si.GET("api/"+apiVersion+"/user/:username", accountHandler.GetAccountInformations, middlewares.LoggedUserMiddleware)
+	si.GET("api/"+apiVersion+"/user", accountHandler.GetAccountInformations, middlewares.LoggedUserMiddleware)
 
 	si.POST("api/"+apiVersion+"/user", registerHandler.HandleRegister)
 	si.POST("api/"+apiVersion+"/auth", loginHandler.HandleLogin)

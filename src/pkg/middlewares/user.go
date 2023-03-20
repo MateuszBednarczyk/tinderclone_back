@@ -12,12 +12,11 @@ func LoggedUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		authHeader := c.Request().Header.Get("Authorization")
 		serviceResponse := services.Tokenizer().IsTokenValid(authHeader)
 
-		if serviceResponse.Content[0].(bool) {
-			return next(c)
+		if serviceResponse.Code != 200 {
+			return c.JSON(serviceResponse.Code, handlers.CreateHandlerResponse(serviceResponse))
 		}
-
 		serviceResponse.Content = []interface{}{}
 
-		return c.JSON(serviceResponse.Code, handlers.CreateHandlerResponse(serviceResponse))
+		return next(c)
 	}
 }
