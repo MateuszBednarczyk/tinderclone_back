@@ -12,6 +12,7 @@ type ICityStore interface {
 	IsCityAlreadyAvailable(cityName string) bool
 	SaveNewCity(entity *domain.City) error
 	IsCityInCountryAlreadyAvailable(cityName string, countryID uuid.UUID) bool
+	SelectAllCitiesWhereCountryIdEqual(countryID uuid.UUID) ([]domain.City, error)
 }
 
 type cityStore struct {
@@ -22,6 +23,15 @@ func NewCityStore(db *gorm.DB) *cityStore {
 	return &cityStore{
 		db: db,
 	}
+}
+
+func (s *cityStore) SelectAllCitiesWhereCountryIdEqual(countryID uuid.UUID) ([]domain.City, error) {
+	cities := []domain.City{}
+	err := s.db.Find(&cities).Where("country_id = ?", countryID)
+	if err != nil {
+		return nil, err.Error
+	}
+	return cities, nil
 }
 
 func (s *cityStore) SelectCityByName(cityName string) *domain.City {

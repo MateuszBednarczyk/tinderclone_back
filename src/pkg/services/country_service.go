@@ -29,7 +29,6 @@ func (s *countrier) SaveNewCountry(countryName string) *Result {
 
 	err := s.countryStore.SaveCountry(&domain.Country{
 		CountryName: strings.ToUpper(countryName),
-		Cities:      []domain.City{},
 	})
 	if err != nil {
 		return CreateServiceResult("Couldn't save a country", 500, []interface{}{})

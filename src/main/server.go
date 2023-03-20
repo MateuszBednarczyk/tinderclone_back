@@ -1,12 +1,14 @@
 package main
 
 import (
+	"log"
 	"sync"
 
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 
 	"tinderclone_back/src/pkg/database"
+	"tinderclone_back/src/pkg/dto"
 	"tinderclone_back/src/pkg/handlers"
 	"tinderclone_back/src/pkg/middlewares"
 	"tinderclone_back/src/pkg/services"
@@ -40,6 +42,7 @@ func launchServer(wg *sync.WaitGroup, ch chan string) {
 	stores.InitializeStores(db)
 	services.InitializeServices()
 	initializeHandlers(serverInstance)
+	provideInitData()
 	serverInstance.Logger.Fatal(serverInstance.Start(server + ":" + port))
 	wg.Done()
 }
@@ -70,4 +73,29 @@ func initializeHandlers(si *echo.Echo) {
 	si.POST("api/"+apiVersion+"/city", citierHandler.HandleSaveNewCity, middlewares.AdminMiddleware)
 
 	si.PATCH("api/"+apiVersion+"/permission", permitterHandler.HandleGiveUserAdminPermission, middlewares.AdminMiddleware)
+}
+
+func provideInitData() {
+	services.Countrier().SaveNewCountry("ADMIN")
+	log.Print("Country executed")
+
+	services.Citier().SaveNewCity("ADMIN", "ADMIN")
+	log.Print("City executed")
+
+	services.AccountMaker().RegisterUser(dto.RegisterUser{
+		Username: "ADMIN",
+		Password: "ADMIN",
+		Name:     "ADMIN",
+		Surname:  "ADMIN",
+		Countries: []string{
+			"ADMIN",
+		},
+		Cities: []string{
+			"ADMIN",
+		},
+	})
+	log.Print("User executed")
+
+	services.Permitter().GiveUserAdminPermission("ADMIN")
+	log.Print("Permissions executed")
 }

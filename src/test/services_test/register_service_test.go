@@ -63,7 +63,6 @@ func TestRegisterUser(t *testing.T) {
 	country := domain.Country{
 		CountryID:   uuid.New(),
 		CountryName: "PL",
-		Cities:      []domain.City{},
 	}
 
 	userStoreMock := mocks.IUserStore{}

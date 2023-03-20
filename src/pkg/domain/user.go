@@ -18,7 +18,7 @@ type User struct {
 	Password  string    `gorm:"not null" json:"Password"`
 	Name      string    `gorm:"not null;type:varchar(25)" json:"Name"`
 	Surname   string    `gorm:"not null;type:varchar(30)" json:"Surname"`
-	Countries []Country `gorm:"many2many:user_countries;" json:"Countries"`
-	Cities    []City    `gorm:"many2many:user_cities;" json:"Cities"`
+	Countries []Country `gorm:"many2many:users_countries;" json:"Countries"`
+	Cities    []City    `gorm:"many2many:users_cities;" json:"Cities"`
 	Role      Role      `gorm:"type:int" json:"Role"`
 }

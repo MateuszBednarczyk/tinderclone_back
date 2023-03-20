@@ -57,6 +57,32 @@ func (_m *ICityStore) SaveNewCity(entity *domain.City) error {
 	return r0
 }
 
+// SelectAllCitiesWhereCountryIdEqual provides a mock function with given fields: countryID
+func (_m *ICityStore) SelectAllCitiesWhereCountryIdEqual(countryID uuid.UUID) ([]domain.City, error) {
+	ret := _m.Called(countryID)
+
+	var r0 []domain.City
+	var r1 error
+	if rf, ok := ret.Get(0).(func(uuid.UUID) ([]domain.City, error)); ok {
+		return rf(countryID)
+	}
+	if rf, ok := ret.Get(0).(func(uuid.UUID) []domain.City); ok {
+		r0 = rf(countryID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]domain.City)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(uuid.UUID) error); ok {
+		r1 = rf(countryID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // SelectCityByName provides a mock function with given fields: cityName
 func (_m *ICityStore) SelectCityByName(cityName string) *domain.City {
 	ret := _m.Called(cityName)

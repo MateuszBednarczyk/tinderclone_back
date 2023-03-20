@@ -29,7 +29,7 @@ func (s *permitter) GiveUserAdminPermission(username string) *Result {
 		return CreateServiceResult("User is already admin", 409, []interface{}{})
 	}
 
-	err = s.userStore.UpdateUserRole(username, domain.Role(2))
+	err = s.userStore.UpdateUserRole(username, domain.Role(0))
 	if err != nil {
 		return CreateServiceResult(err.Error(), 500, []interface{}{})
 	}
