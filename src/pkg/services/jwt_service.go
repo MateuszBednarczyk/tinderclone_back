@@ -7,10 +7,11 @@ import (
 	"github.com/dgrijalva/jwt-go"
 
 	"tinderclone_back/src/pkg/domain"
+	"tinderclone_back/src/pkg/dto"
 )
 
 type IJwtTokenizer interface {
-	GenerateTokens(user domain.User) *Result
+	GenerateTokens(user dto.User) *Result
 	RefreshToken(rawToken string) *Result
 	IsTokenValid(rawToken string) *Result
 }
@@ -19,8 +20,8 @@ type jwtTokenizer struct {
 }
 
 type JwtClaims struct {
-	Username string      `json:"Username"`
-	Role     domain.Role `json:"Role"`
+	User dto.User
+	Role domain.Role
 	jwt.StandardClaims
 }
 
@@ -28,9 +29,10 @@ func NewJwtTokenizer() *jwtTokenizer {
 	return &jwtTokenizer{}
 }
 
-func (s *jwtTokenizer) GenerateTokens(user domain.User) *Result {
+func (s *jwtTokenizer) GenerateTokens(user dto.User) *Result {
+
 	baseTokenClaims := JwtClaims{
-		user.Username,
+		user,
 		user.Role,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(15 * time.Minute).Unix(),
@@ -38,7 +40,7 @@ func (s *jwtTokenizer) GenerateTokens(user domain.User) *Result {
 	}
 
 	refreshTokenClaims := JwtClaims{
-		user.Username,
+		user,
 		user.Role,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(30 * time.Minute).Unix(),
@@ -73,7 +75,7 @@ func (s *jwtTokenizer) RefreshToken(rawToken string) *Result {
 		return CreateServiceResult("Invalid claims", 403, nil)
 	}
 
-	tokens := s.GenerateTokens(domain.User{Role: claims.Role, Username: claims.Username})
+	tokens := s.GenerateTokens(claims.User)
 	if tokens.Content == nil {
 		return CreateServiceResult(tokens.Message, tokens.Code, nil)
 	}

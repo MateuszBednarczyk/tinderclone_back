@@ -13,6 +13,7 @@ import (
 	"tinderclone_back/src/pkg/middlewares"
 	"tinderclone_back/src/pkg/services"
 	"tinderclone_back/src/pkg/stores"
+	"tinderclone_back/src/pkg/utils"
 )
 
 var (
@@ -40,6 +41,7 @@ func launchServer(wg *sync.WaitGroup, ch chan string) {
 		DbName:     dbName,
 	})
 	stores.InitializeStores(db)
+	utils.InitializeUtils()
 	services.InitializeServices()
 	initializeHandlers(serverInstance)
 	provideInitData()

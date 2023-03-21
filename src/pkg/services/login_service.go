@@ -5,6 +5,7 @@ import (
 
 	"tinderclone_back/src/pkg/dto"
 	"tinderclone_back/src/pkg/stores"
+	"tinderclone_back/src/pkg/utils"
 )
 
 type IAuthenticator interface {
@@ -13,11 +14,13 @@ type IAuthenticator interface {
 
 type authenticator struct {
 	userStore stores.IUserStore
+	userUtil  utils.IUserUtil
 }
 
-func NewAuthenticator(store stores.IUserStore) *authenticator {
+func NewAuthenticator(store stores.IUserStore, userUtil utils.IUserUtil) *authenticator {
 	return &authenticator{
 		userStore: store,
+		userUtil:  userUtil,
 	}
 }
 
@@ -33,8 +36,7 @@ func (s *authenticator) LoginUser(requestBody dto.Credentials) *Result {
 	if err != nil {
 		return CreateServiceResult("Bad credentials", 401, []interface{}{})
 	}
-
-	tokens := Tokenizer().GenerateTokens(*foundUser)
+	tokens := Tokenizer().GenerateTokens(*s.userUtil.ProcessUserEntityToDTO(foundUser))
 
 	return CreateServiceResult("Logged in", 200, tokens.Content)
 }

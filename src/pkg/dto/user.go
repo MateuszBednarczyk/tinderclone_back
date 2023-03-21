@@ -1,6 +1,10 @@
 package dto
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+
+	"tinderclone_back/src/pkg/domain"
+)
 
 type User struct {
 	Id        uuid.UUID
@@ -9,4 +13,5 @@ type User struct {
 	Surname   string
 	Countries []string
 	Cities    []string
+	Role      domain.Role
 }

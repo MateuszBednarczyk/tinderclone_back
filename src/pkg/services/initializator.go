@@ -1,6 +1,9 @@
 package services
 
-import "tinderclone_back/src/pkg/stores"
+import (
+	"tinderclone_back/src/pkg/stores"
+	"tinderclone_back/src/pkg/utils"
+)
 
 var iAccountMaker IAccountMaker
 var iAuthenticator IAuthenticator
@@ -12,7 +15,7 @@ var iPermitter IPermitter
 
 func InitializeServices() {
 	iAccountMaker = NewAccountMaker(stores.UserStore(), stores.CountryStore(), stores.CityStore())
-	iAuthenticator = NewAuthenticator(stores.UserStore())
+	iAuthenticator = NewAuthenticator(stores.UserStore(), utils.UserUtil())
 	iTokenizer = NewJwtTokenizer()
 	iAccounter = NewAccounter(stores.UserStore())
 	iCountrier = NewCountrier(stores.CountryStore())
