@@ -17,7 +17,7 @@ func InitializeServices() {
 	iAccountMaker = NewAccountMaker(stores.UserStore(), stores.CountryStore(), stores.CityStore())
 	iAuthenticator = NewAuthenticator(stores.UserStore(), utils.UserUtil())
 	iTokenizer = NewJwtTokenizer()
-	iAccounter = NewAccounter(stores.UserStore())
+	iAccounter = NewAccounter(stores.UserStore(), utils.UserUtil())
 	iCountrier = NewCountrier(stores.CountryStore())
 	iCitier = NewCitier(stores.CityStore(), stores.CountryStore())
 	iPermitter = NewPermitter(stores.UserStore())

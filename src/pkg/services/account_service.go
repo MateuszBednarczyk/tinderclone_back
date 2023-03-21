@@ -1,8 +1,8 @@
 package services
 
 import (
-	"tinderclone_back/src/pkg/dto"
 	"tinderclone_back/src/pkg/stores"
+	"tinderclone_back/src/pkg/utils"
 )
 
 type IAccounter interface {
@@ -11,11 +11,13 @@ type IAccounter interface {
 
 type accounter struct {
 	userStore stores.IUserStore
+	userUtil  utils.IUserUtil
 }
 
-func NewAccounter(store stores.IUserStore) *accounter {
+func NewAccounter(store stores.IUserStore, userUtil utils.IUserUtil) *accounter {
 	return &accounter{
 		userStore: store,
+		userUtil:  userUtil,
 	}
 }
 
@@ -24,26 +26,7 @@ func (s *accounter) GetAccountInformations(username string) *Result {
 	if err != nil {
 		return CreateServiceResult("Couldn't find an user", 404, []interface{}{})
 	}
-
-	countries := []string{}
-	cities := []string{}
-
-	for _, country := range user.Countries {
-		countries = append(countries, country.CountryName)
-	}
-
-	for _, city := range user.Cities {
-		cities = append(cities, city.CityName)
-	}
-
-	response := dto.User{
-		Id:        user.UserID,
-		Username:  user.Username,
-		Name:      user.Name,
-		Surname:   user.Surname,
-		Countries: countries,
-		Cities:    cities,
-	}
+	response := s.userUtil.ProcessUserEntityToDTO(user)
 
 	return CreateServiceResult("User found", 200, []interface{}{response})
 }
