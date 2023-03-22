@@ -6,6 +6,7 @@ import (
 	"github.com/go-playground/assert/v2"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 
 	"tinderclone_back/src/pkg/domain"
 	"tinderclone_back/src/pkg/dto"
@@ -65,24 +66,27 @@ func TestRegisterUser(t *testing.T) {
 		CountryName: "PL",
 	}
 
+	city := domain.City{
+		CityID:    uuid.New(),
+		CityName:  "WWA",
+		CountryID: country.CountryID,
+		Country:   country,
+	}
+
 	userStoreMock := mocks.IUserStore{}
 	userStoreMock.On("SaveUser", mock.Anything).Return(nil)
 	userStoreMock.On("IsUsernameAlreadyTaken", mock.Anything).Return(false)
 
-	cityStoreMock := mocks.ICityStore{}
-	cityStoreMock.On("IsCityAlreadyAvailable", mock.Anything).Return(true)
-	cityStoreMock.On("SelectCityByName", mock.Anything).Return(&domain.City{
-		CityID:   uuid.New(),
-		CityName: "WWA",
-		Country:  country,
-	})
-
 	countryStoreMock := mocks.ICountryStore{}
 	countryStoreMock.On("IsCountryAlreadyAvailable").Return(true)
-	countryStoreMock.On("SelectCountryByName", mock.Anything).Return(&country)
+	countryStoreMock.On("SelectCountryByName", mock.Anything).Return(&country, nil)
+
+	cityStoreMock := mocks.ICityStore{}
+	cityStoreMock.On("IsCityAlreadyAvailable", mock.Anything).Return(true)
+	cityStoreMock.On("SelectCityByName", mock.Anything).Return(&city)
 
 	serviceInstance := services.NewAccountMaker(&userStoreMock, &countryStoreMock, &cityStoreMock)
 	result := serviceInstance.RegisterUser(requestBody)
 
-	assert.Equal(t, 200, result.Code)
+	require.Equal(t, result.Message, "Account created")
 }

@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"strings"
+
 	"github.com/labstack/echo/v4"
 
 	"tinderclone_back/src/pkg/services"
@@ -23,6 +25,11 @@ func NewCountrierHandler(countrier services.ICountrier) *countrierHandler {
 
 func (h *countrierHandler) HandleSaveCountry(c echo.Context) error {
 	countryName := c.QueryParam("name")
+	if len(strings.Trim(countryName, "")) == 0 {
+		return c.JSON(400, map[string]string{
+			"Message": "Given arguments cannot be null or blank",
+		})
+	}
 	serviceResult := h.countrier.SaveNewCountry(countryName)
 
 	return c.JSON(serviceResult.Code, CreateHandlerResponse(serviceResult))

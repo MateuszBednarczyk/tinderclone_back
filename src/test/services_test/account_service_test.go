@@ -4,10 +4,11 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 
 	"tinderclone_back/src/pkg/domain"
+	"tinderclone_back/src/pkg/dto"
 	"tinderclone_back/src/pkg/services"
 	"tinderclone_back/src/pkg/utils"
 	"tinderclone_back/src/test/mocks"
@@ -32,5 +33,5 @@ func TestGetAccountInformations(t *testing.T) {
 	serviceInstance := services.NewAccounter(&userStoreMock, userUtil)
 	result := serviceInstance.GetAccountInformations("admin")
 
-	assert.Equal(t, mockUser.Username, result.Content[0].(*domain.User).Username)
+	require.Equal(t, mockUser.Username, result.Content[0].(*dto.User).Username)
 }
