@@ -1,6 +1,8 @@
 package stores
 
 import (
+	"log"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 
@@ -62,7 +64,8 @@ func (s *cityStore) IsCityAlreadyAvailable(cityName string) bool {
 
 func (s *cityStore) IsCityInCountryAlreadyAvailable(cityName string, countryID uuid.UUID) bool {
 	var city domain.City
-	_ = s.db.Where("country_id = ?", countryID).Find(&city)
+	_ = s.db.Table("cities").Where("country_id = ? AND city_name = ?", countryID, cityName).Find(&city)
+	log.Print(city.CityName, city.Country)
 
 	return city.CityName != ""
 }
