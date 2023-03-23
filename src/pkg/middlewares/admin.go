@@ -16,7 +16,7 @@ func AdminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			return c.JSON(serviceResponse.Code, handlers.CreateHandlerResponse(serviceResponse))
 		}
 
-		if serviceResponse.Content[0].(*services.JwtClaims).Role != 2 {
+		if serviceResponse.Content[0].(*services.JwtClaims).User.Role != 2 {
 			return c.JSON(403, "You don't have permission")
 		}
 

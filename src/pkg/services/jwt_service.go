@@ -6,7 +6,6 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 
-	"tinderclone_back/src/pkg/domain"
 	"tinderclone_back/src/pkg/dto"
 )
 
@@ -14,6 +13,7 @@ type IJwtTokenizer interface {
 	GenerateTokens(user dto.User) *Result
 	RefreshToken(rawToken string) *Result
 	IsTokenValid(rawToken string) *Result
+	GetUserDTOFromToken(rawToken string) (*dto.User, error)
 }
 
 type jwtTokenizer struct {
@@ -21,7 +21,6 @@ type jwtTokenizer struct {
 
 type JwtClaims struct {
 	User dto.User
-	Role domain.Role
 	jwt.StandardClaims
 }
 
@@ -33,7 +32,6 @@ func (s *jwtTokenizer) GenerateTokens(user dto.User) *Result {
 
 	baseTokenClaims := JwtClaims{
 		user,
-		user.Role,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(15 * time.Minute).Unix(),
 		},
@@ -41,7 +39,6 @@ func (s *jwtTokenizer) GenerateTokens(user dto.User) *Result {
 
 	refreshTokenClaims := JwtClaims{
 		user,
-		user.Role,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(30 * time.Minute).Unix(),
 		},
@@ -113,4 +110,14 @@ func decodeJwt(tokenString string) (*JwtClaims, error) {
 	}
 
 	return token.Claims.(*JwtClaims), nil
+}
+
+func (s *jwtTokenizer) GetUserDTOFromToken(rawToken string) (*dto.User, error) {
+	rawToken = strings.Replace(rawToken, "Bearer ", "", 1)
+	claims, err := decodeJwt(rawToken)
+	if err != nil {
+		return nil, err
+	}
+
+	return &claims.User, nil
 }

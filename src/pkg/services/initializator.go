@@ -12,6 +12,7 @@ var iAccounter IAccounter
 var iCountrier ICountrier
 var iCitier ICitier
 var iPermitter IPermitter
+var iPartnerSuggester IPartnerSuggester
 
 func InitializeServices() {
 	iAccountMaker = NewAccountMaker(stores.UserStore(), stores.CountryStore(), stores.CityStore())
@@ -21,6 +22,7 @@ func InitializeServices() {
 	iCountrier = NewCountrier(stores.CountryStore())
 	iCitier = NewCitier(stores.CityStore(), stores.CountryStore())
 	iPermitter = NewPermitter(stores.UserStore())
+	iPartnerSuggester = NewPartnerSuggester(stores.UserStore(), stores.CityStore(), stores.CountryStore())
 }
 
 func AccountMaker() IAccountMaker {
@@ -49,4 +51,8 @@ func Citier() ICitier {
 
 func Permitter() IPermitter {
 	return iPermitter
+}
+
+func PartnerSuggester() IPartnerSuggester {
+	return iPartnerSuggester
 }
