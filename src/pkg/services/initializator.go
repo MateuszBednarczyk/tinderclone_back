@@ -22,7 +22,7 @@ func InitializeServices() {
 	iCountrier = NewCountrier(stores.CountryStore())
 	iCitier = NewCitier(stores.CityStore(), stores.CountryStore())
 	iPermitter = NewPermitter(stores.UserStore())
-	iPartnerSuggester = NewPartnerSuggester(stores.UserStore(), stores.CityStore(), stores.CountryStore())
+	iPartnerSuggester = NewPartnerSuggester(stores.UserStore(), stores.CityStore(), stores.CountryStore(), utils.UserUtil())
 }
 
 func AccountMaker() IAccountMaker {

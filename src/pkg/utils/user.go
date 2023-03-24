@@ -22,6 +22,7 @@ func (u *userUtil) ProcessUserEntityToDTO(user *domain.User) *dto.User {
 	return &dto.User{
 		Id:        user.UserID,
 		Username:  user.Username,
+		Surname:   user.Surname,
 		Name:      user.Name,
 		Countries: u.processCountriesToStringSlice(user),
 		Cities:    u.processCitiesToStringSlice(user),

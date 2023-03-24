@@ -1,6 +1,7 @@
 package stores
 
 import (
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 
 	"tinderclone_back/src/pkg/domain"
@@ -11,6 +12,8 @@ type IUserStore interface {
 	IsUsernameAlreadyTaken(username string) bool
 	SelectUserByUsername(username string) (*domain.User, error)
 	UpdateUserRole(username string, role domain.Role) error
+	GetAllUsersFromGivenCountry(countryID uuid.UUID) ([]domain.User, error)
+	GetAllUsersFromGivenCity(cityID uuid.UUID) ([]domain.User, error)
 }
 
 type userStore struct {
@@ -37,7 +40,7 @@ func (s *userStore) IsUsernameAlreadyTaken(username string) bool {
 
 func (s *userStore) SelectUserByUsername(username string) (*domain.User, error) {
 	var user domain.User
-	err := s.db.First(&user, "username = ?", username).Preload("Cities").Preload("Countries").Find(&user)
+	err := s.db.First(&user, "username = ?", username).Preload("Cities").Preload("Countries").First(&user)
 	if err.Error != nil {
 		return nil, err.Error
 	}
@@ -48,4 +51,44 @@ func (s *userStore) SelectUserByUsername(username string) (*domain.User, error) 
 func (s *userStore) UpdateUserRole(username string, role domain.Role) error {
 	result := s.db.Model(&domain.User{}).Where("username = ?", username).Update("role", role)
 	return result.Error
+}
+
+func (s *userStore) GetAllUsersFromGivenCountry(countryID uuid.UUID) ([]domain.User, error) {
+	var userIDs []uuid.UUID
+	var entities []domain.User
+	err := s.db.Select("user_user_id").Table("users_countries").Where("country_country_id = ?", countryID).Find(&userIDs).Error
+	if err != nil {
+		return nil, err
+	}
+
+	for _, userID := range userIDs {
+		var entity domain.User
+		err := s.db.Where("user_id = ?", userID).Find(&entity).Error
+		if err != nil {
+			return nil, err
+		}
+		entities = append(entities, entity)
+	}
+
+	return entities, nil
+}
+
+func (s *userStore) GetAllUsersFromGivenCity(cityID uuid.UUID) ([]domain.User, error) {
+	var userIDs []uuid.UUID
+	var entities []domain.User
+	err := s.db.Select("user_user_id").Table("users_cities").Where("city_city_id = ?", cityID).Find(&userIDs).Error
+	if err != nil {
+		return nil, err
+	}
+
+	for _, userID := range userIDs {
+		var entity domain.User
+		err := s.db.Where("user_id = ?", userID).Preload("Cities").Preload("Countries").First(&entity).Error
+		if err != nil {
+			return nil, err
+		}
+		entities = append(entities, entity)
+	}
+
+	return entities, nil
 }
