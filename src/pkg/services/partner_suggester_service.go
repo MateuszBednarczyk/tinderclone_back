@@ -42,7 +42,7 @@ func (s *partnerSuggester) SuggestPartners(userDTO dto.User) *Result {
 			return CreateServiceResult("Cannot process users", 500, []interface{}{})
 		}
 		for _, user := range users {
-			if !containsUser(usersSuggestions, user.UserID) && !containsUser(userEntity.DislikedUsers, user.UserID) {
+			if !containsUser(usersSuggestions, user.UserID) && !containsUser(userEntity.DislikedUsers, user.UserID) && user.UserID != userEntity.UserID {
 				usersSuggestions = append(usersSuggestions, user)
 			}
 		}
@@ -54,7 +54,7 @@ func (s *partnerSuggester) SuggestPartners(userDTO dto.User) *Result {
 			return CreateServiceResult("Cannot process users", 500, []interface{}{})
 		}
 		for _, user := range users {
-			if !containsUser(usersSuggestions, user.UserID) && !containsUser(userEntity.DislikedUsers, user.UserID) {
+			if !containsUser(usersSuggestions, user.UserID) && !containsUser(userEntity.DislikedUsers, user.UserID) && user.UserID != userEntity.UserID {
 				usersSuggestions = append(usersSuggestions, user)
 			}
 		}
@@ -66,7 +66,7 @@ func (s *partnerSuggester) SuggestPartners(userDTO dto.User) *Result {
 		result = append(result, *processedDTO)
 	}
 
-	return CreateServiceResult("ok", 200, []interface{}{result})
+	return CreateServiceResult("Partner suggestions", 200, []interface{}{result})
 }
 
 func containsUser(slice []domain.User, id uuid.UUID) bool {
